@@ -39,7 +39,9 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     
     'http://localhost:3000',
-    'http://127.0.0.1:3000'
+    'http://127.0.0.1:3000',
+    'http://3.109.213.210:8000',
+    'http://3.109.213.210'
 ]
 
 # Application definition
@@ -122,12 +124,12 @@ DATABASES = {
     'ENGINE': 'django.db.backends.mysql', 
     'NAME': 'ArVisual',
     'USER': 'root',
-    'PASSWORD': '1234',#Admin@123
+    'PASSWORD': '',#Admin@123
     'HOST': 'localhost', # Or an IP Address that your DB is hosted on
     'PORT': '3306',
-    # 'OPTIONS': {
-    #         'read_default_file': '/opt/lampp/etc/my.cnf',
-    #     }
+    'OPTIONS': {
+            'read_default_file': '/opt/lampp/etc/my.cnf',
+        }
     }
 }
 

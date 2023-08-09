@@ -1,40 +1,5 @@
-from rest_framework import generics , status , viewsets
-from .models import Video
-from rest_framework.views import APIView 
-from rest_framework.response import Response
-from .serializers import *
-from distutils import errors
-from django.conf import settings
-from django.contrib.auth import logout,login,authenticate
-from rest_framework.permissions import AllowAny, IsAuthenticated 
-from rest_framework.authentication import TokenAuthentication
-from rest_framework import status, views
-from rest_framework_simplejwt.tokens import RefreshToken
-import  json
-from django.http import JsonResponse
-from django.conf import settings
-from django.http import Http404
-from .renderer import UserRenderer
-# url="http://127.0.0.1:8000"
-url="http://3.109.213.210:8000"
-from urllib.parse import urljoin
-from django.core.exceptions import ValidationError
-import os
-import qrcode 
-import sys
-from django.shortcuts import get_object_or_404
-from django.core.mail import EmailMultiAlternatives, message
-from django.template.loader import render_to_string
-from django.core.mail import EmailMultiAlternatives
 
-# image_url="http://127.0.0.1:8000/media/"
-image_url="http://3.109.213.210:8000/media/"
-
-# Project_Id_Url="http://127.0.0.1:3000/ar-web-view"
-Project_Id_Url="http://sayehbaz.ir/ar-web-view"
-# Verify_url="http://127.0.0.1:3000/#/verify-email"
-Verify_url="http://sayehbaz.ir/#/verify-email"
-
+from ARVisualApi.ar_package import *
 
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
@@ -74,7 +39,6 @@ class UserRegistrationView(views.APIView):
                     token=get_tokens_for_user(user)
                     access_token = token['access']
                     verify_email(email,access_token)
-                    # data_dict={"id":serializer.data['id'],"firstname":serializer.data['firstname'],"lastname":serializer.data['lastname'],"email":serializer.data['email'],"dateofbirth":serializer.data['dateofbirth'],"proffession":serializer.data['proffession']}
                     return Response({'status':status.HTTP_201_CREATED,'msg':'Email Verification link sent to your email','token':access_token})
             return Response({errors:serializer.errors},status=status.HTTP_400_BAD_REQUEST)
        
@@ -94,7 +58,6 @@ class ResendVerifyEmail(views.APIView):
 
         except Exception as e:
             return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e)})
-
 
 class EmailVerified(views.APIView):
     renderer_classes=[UserRenderer]
@@ -139,7 +102,7 @@ class UserLoginView(views.APIView):
                 else:
                     login(request, user)
                     token = get_tokens_for_user(user)
-                    userobj = {'id': user.id, 'email': user.email, 'dateofBirth': user.dateofbirth}
+                    userobj ={'id': user.id, 'email': user.email, 'dateofBirth': user.dateofbirth}
                     return Response({'detail': 'Logged in successfully.', 'token': token, 'data': userobj})
             except Exception as e:
                 exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -216,10 +179,6 @@ class ResetPasswordView(APIView):
             exc_type, exc_obj, exc_tb = sys.exc_info()
             return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
 
-
-
-
-
 class ChangePasswordView(APIView):
     renderer_classes=[UserRenderer]
     permission_classes=[IsAuthenticated]
@@ -263,7 +222,6 @@ class UpdateCustomerProfilePhoto(APIView):
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
-
 
 class UserLogoutView(views.APIView):
     permission_classes = (IsAuthenticated,)
@@ -457,7 +415,8 @@ class ProjectDetailView(APIView):
                 'publish_key': serializer.data['publish_key'],
                 'qr_code_url':qrcode_data[0]['qr_code_url']  
             }
-            return Response(response_data)
+            project_label_list=list(ProjectLabel.objects.filter(projectId=pk).values('id','project_label'))
+            return Response({"status":status.HTTP_200_OK,"project_details":response_data,"project_label_list":project_label_list})
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
@@ -497,6 +456,7 @@ class ListProjectView(APIView):
             response=[]
             for project_data in serializer.data:
               if pk==project_data['projectUser']:
+
                 project_data_dict = {
                 "id": (project_data['id']),
                 "imagePro": urljoin(url, project_data['imagePro']) if project_data['imagePro'] else None,
@@ -510,7 +470,8 @@ class ListProjectView(APIView):
                 'publish_key': project_data['publish_key']
             }
                 response.append(project_data_dict)
-            return Response(response,status=status.HTTP_200_OK)
+            project_label_list=list(ProjectLabel.objects.filter(user_id=pk).values('id','project_label','projectId'))
+            return Response({"status":status.HTTP_200_OK,"projectlist":response,"project_label_list":project_label_list})
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
@@ -666,6 +627,12 @@ class ProjectLabelUpdate(APIView):
             data={"id":serializer.data['id'],"project_id":str(serializer.data['projectId']),"required":serializer.data['required'],"project_label":serializer.data['project_label']}
             return Response({"status":status.HTTP_200_OK,'message':'success','data':data})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+   
+    def delete(self, request, pk, format=None):
+        product = self.get_object(pk)
+        if product.delete():
+            return Response({'message':status.HTTP_200_OK,'success':'True'})
+        return Response(status=status.HTTP_400_BAD_REQUEST)
     
 class UploadFileAPIView(APIView):
     def post(self, request):
