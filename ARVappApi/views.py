@@ -410,10 +410,11 @@ class ProjectDetailView(APIView):
                 "projectType": serializer.data['projectType'],
                 "triggerType": serializer.data['triggerType'],
                 'publish_key': serializer.data['publish_key'],
-                'qr_code_url':qrcode_data[0]['qr_code_url']  
+                'qr_code_url':qrcode_data[0]['qr_code_url']  ,
+                "project_label":list(ProjectLabel.objects.filter(projectId=pk,required=True).values('id','project_label','required'))
             }
-            project_label_list=list(ProjectLabel.objects.filter(projectId=pk).values('id','project_label'))
-            return Response({"status":status.HTTP_200_OK,"project_details":response_data,"project_label_list":project_label_list})
+           
+            return Response({"status":status.HTTP_200_OK,"project_details":response_data})
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
@@ -464,14 +465,16 @@ class ListProjectView(APIView):
                 "created_at": project_data['created_at'],
                 "projectType": project_data['projectType'],
                 "triggerType": project_data['triggerType'],
-                'publish_key': project_data['publish_key']
+                'publish_key': project_data['publish_key'],
+                "project_label":list(ProjectLabel.objects.filter(projectId=project_data['id'],required=True).values('id','project_label','required'))
             }
                 response.append(project_data_dict)
-            project_label_list=list(ProjectLabel.objects.filter(user_id=pk).values('id','project_label','projectId'))
-            return Response({"status":status.HTTP_200_OK,"projectlist":response,"project_label_list":project_label_list})
+            
+            return Response({"status":status.HTTP_200_OK,"projectlist":response})
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
+
 
 class UpdateProjectView(APIView):
     renderer_classes = [UserRenderer]
@@ -484,15 +487,16 @@ class UpdateProjectView(APIView):
             triggerType=request.data.get('triggerType')
             publish_key=request.data.get('publish_key')
             if CreateProject.objects.filter(id=pk).exists():
-                if imagePro:
+                if not imagePro:
+                    imagedata=None
+                    
+                else:
                     project = CreateProject.objects.get(id=pk)
                     project.imagePro = imagePro
                     project.save()
                     imagedata=urljoin(image_url,str(project.imagePro))
-                    
-                else:
-                    imagedata=None
-                    
+        
+                 
                 if ProTitle:
                     data=CreateProject.objects.filter(id=pk).update(ProTitle=ProTitle)
 
