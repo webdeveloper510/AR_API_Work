@@ -36,6 +36,10 @@ image_url="http://3.109.213.210:8000/media/"
 Project_Id_Url="http://sayehbaz.ir/ar-web-view"
 # Verify_url="http://127.0.0.1:3000/#/verify-email"
 Verify_url="http://sayehbaz.ir/#/verify-email"
+# Forget_password_url="http://127.0.0.1:3000/#/forgot-password"
+Forget_password_url="http://sayehbaz.ir/#/forgot-password"
+
+
 from ARVappApi.serializers import *
 from ARVappApi.models import *
 

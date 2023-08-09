@@ -8,7 +8,6 @@ def get_tokens_for_user(user):
         'access': str(refresh.access_token),
     }
 
-
 def verify_email(email, access_token):
     subject, from_email, to = 'Verify your email', settings.EMAIL_HOST_USER, email
     text_content = 'This is an important message.'
@@ -21,7 +20,7 @@ def verify_email(email, access_token):
 def forget_password_mail(email, access_token):
     subject, from_email, to = 'Forget Password Link', settings.EMAIL_HOST_USER, email
     text_content = 'This is an important message.'
-    context = {'verify_url': Verify_url + '/' + access_token}
+    context = {'Forget_password_url': Forget_password_url + '/' + access_token}
     html_content = render_to_string('forget_password.html', context)
     msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
     msg.attach_alternative(html_content, "text/html")
@@ -95,7 +94,7 @@ class UserLoginView(views.APIView):
                     return Response({'detail': 'password is required.'}, status=status.HTTP_401_UNAUTHORIZED)
 
                 if not user:
-                    return Response({'detail': 'Unauthorized user.'}, status=status.HTTP_401_UNAUTHORIZED)
+                    return Response({'detail': 'Username and password did not match.'}, status=status.HTTP_401_UNAUTHORIZED)
                 
                 if not User.objects.filter(email=username,Is_verified=True).exists():
                     return Response({'detail': 'Unauthorized user.'}, status=status.HTTP_401_UNAUTHORIZED)
@@ -148,15 +147,13 @@ class ForgetPasswordView(APIView):
 
 class ResetPasswordView(APIView):
     renderer_classes=[UserRenderer]  
+    permission_classes=[IsAuthenticated]
     def post(self, request):
-        email = request.data.get("email")
         new_password = request.data.get("new_password")
         confirm_password= request.data.get("confirm_password")
         try:
-            if not email:
-                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "Email is required"})
-            
-            user = User.objects.filter(email=email).first()
+            serializer = UserProfileSerializer(request.user)
+            user = User.objects.filter(email=serializer.data['email']).first()
             if not user:
                 return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "User with this email does not exist"})
             
@@ -173,7 +170,7 @@ class ResetPasswordView(APIView):
                 user.set_password(new_password)
                 user.save()
             
-                return Response({'status': status.HTTP_200_OK, 'msg': ' Reset password successfully '})
+                return Response({'status': status.HTTP_200_OK, 'message': ' Reset password successfully '})
 
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
