@@ -28,7 +28,10 @@ from django.shortcuts import get_object_or_404
 from django.core.mail import EmailMultiAlternatives, message
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
-
+import json
+from django.core.serializers.json import DjangoJSONEncoder
+from django.http import JsonResponse
+import numpy as np
 # image_url="http://127.0.0.1:8000/media/"
 image_url="http://3.109.213.210:8000/media/"
 

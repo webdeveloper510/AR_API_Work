@@ -12,7 +12,7 @@ urlpatterns = [
     path('project-list/<str:pk>/',views.ProjectDetailView.as_view()),
     path('project-label/',views.CreateProjectLabel.as_view()),#new
     path('project_label_list/<int:user_id>/',views.ProjectLabelList.as_view()),#new
-    path('project_label_update/<int:pk>/',views.ProjectLabelUpdate.as_view()),#new
+    path('project_label_delete/<int:pk>/',views.ProjectLabelDelete.as_view()),#new
     path('signup/', views.UserRegistrationView.as_view()),#modify
     path('resend-verify-email/', views.ResendVerifyEmail.as_view()),#new
     path('verified-email/', views.EmailVerified.as_view()),#new

@@ -26,7 +26,6 @@ def forget_password_mail(email, access_token):
     msg.attach_alternative(html_content, "text/html")
     msg.send()
 
-
 class UserRegistrationView(views.APIView):
     permission_classes = (AllowAny,)
     def post(self,request,format=None):
@@ -59,8 +58,6 @@ class UserRegistrationView(views.APIView):
                         verify_email(email,access_token)
                     return Response({'status':status.HTTP_201_CREATED,'msg':'Email Verification link sent to your email','token':access_token})
             return Response({errors:serializer.errors},status=status.HTTP_400_BAD_REQUEST)
-
-
        
 class ResendVerifyEmail(views.APIView):
     renderer_classes=[UserRenderer]
@@ -127,8 +124,7 @@ class UserLoginView(views.APIView):
             except Exception as e:
                 exc_type, exc_obj, exc_tb = sys.exc_info()
                 return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
-
-         
+                 
 
 class ProfileView(APIView):
     renderer_classes=[UserRenderer]
@@ -581,37 +577,57 @@ project3dmodel_detail = SaveGLTFModel.as_view({
 class CreateProjectLabel(APIView):
     renderer_classes = [UserRenderer]
 
-    def post(self, request,format=None):
+    def post(self, request, format=None):
+        
         try:
-            project_id=request.data.get('project_id')
-            project_label=request.data.get('project_label')
-            user_id=request.data.get('user_id')
-            required=request.data.get('required')
-
-            if not  user_id:
-                return Response({"status":status.HTTP_400_BAD_REQUEST,"message":"user_id is required"})
-            
-            if not User.objects.filter(id=user_id).exists():
-                return Response({"status":status.HTTP_400_BAD_REQUEST,"message":"user does not exists"})
-            
-            if not project_id:
-                return Response({"status":status.HTTP_400_BAD_REQUEST,"message":"project_id is required"})
-            
-            if not CreateProject.objects.filter(id=project_id).exists():
-                return Response({"status":status.HTTP_400_BAD_REQUEST,"message":"project is not exists"})
-            
-            if not project_label:
-                return Response({"status":status.HTTP_400_BAD_REQUEST,"message":"Label is required"})
+            project_id = request.data.get('project_id')
+            project_label = request.data.get('project_label')
+            user_id = request.data.get('user_id')
+            required = request.data.get('required')
+            if ProjectLabel.objects.filter(projectId=project_id, project_label=project_label,user_id=user_id).exists():
+                if not user_id:
+                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "user_id is required"})
+                
+                if not User.objects.filter(id=user_id).exists():
+                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "user does not exist"})
+                
+                if not project_id:
+                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "project_id is required"})
+                
+                if not CreateProject.objects.filter(id=project_id).exists():
+                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "project does not exist"})
+                
+                label_data = ProjectLabel.objects.filter(projectId=project_id, project_label=project_label).update(project_label=project_label, required=required)
+                updated_label = ProjectLabel.objects.get(projectId=project_id, project_label=project_label)
+                data={"id": updated_label.id,"label_name":project_label}
+                return Response({"status": status.HTTP_200_OK, "message": "Label updated successfully", "data": data})
             
             else:
-                ProjectID=CreateProject.objects.get(id=project_id)
-                UserID=User.objects.get(id=user_id)
-                label_data=ProjectLabel.objects.create(projectId=ProjectID,project_label=project_label,user_id=UserID,required=required)
-                label_data.save()
-                label_id=label_data.id
-                label_name=label_data.project_label
-                Data={"id":label_id,"label_name":label_name}
-                return Response({"status":status.HTTP_201_CREATED,"message":"Create Label successfully","data":Data})
+                if not user_id:
+                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "user_id is required"})
+                
+                if not User.objects.filter(id=user_id).exists():
+                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "user does not exist"})
+                
+                if not project_id:
+                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "project_id is required"})
+                
+                if not CreateProject.objects.filter(id=project_id).exists():
+                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "project does not exist"})
+                
+                if not project_label:
+                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "Label is required"})
+                
+                else:
+                    ProjectID = CreateProject.objects.get(id=project_id)
+                    UserID = User.objects.get(id=user_id)
+                    label_data = ProjectLabel.objects.create(projectId=ProjectID, project_label=project_label, user_id=UserID, required=required)
+                    label_data.save()
+                    label_id = label_data.id
+                    label_name = label_data.project_label
+                    Data = {"id": label_id, "label_name": label_name}
+                    return Response({"status": status.HTTP_201_CREATED, "message": "Label created successfully", "data": Data})
+        
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
@@ -620,19 +636,37 @@ class CreateProjectLabel(APIView):
 class ProjectLabelList(APIView):
     renderer_classes = [UserRenderer]
 
-    def get(self, request, user_id,format=None):
+    def get(self, request, user_id, format=None):
         try:
-            if not  ProjectLabel.objects.filter(user_id=user_id).exists():
-                return Response({"status":status.HTTP_400_BAD_REQUEST,"message":" user with label does not exist"})
+            if not ProjectLabel.objects.filter(user_id=user_id).exists():
+                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "User with label does not exist"})
             else:
-                label_data=list(ProjectLabel.objects.filter(user_id=user_id).values('id','project_label','required'))
-                return Response({"status":status.HTTP_200_OK,"message":"success","user_id":user_id,"data":label_data})
-        
+                product = ProjectLabel.objects.filter(user_id=user_id).order_by('id')
+                serializer = ProjectLabel_Serializer(product, many=True)
+                label_data = []
+                seen_project_labels = set()  # To keep track of seen project_labels
+
+                for project_label_data in serializer.data:
+                    project_label = project_label_data['project_label']
+                    if project_label not in seen_project_labels:
+                        seen_project_labels.add(project_label)
+                        label_dict = {
+                            "id": project_label_data['id'],
+                            "project_label": project_label,
+                            "required": project_label_data['required'],
+                            "projectId": project_label_data['projectId']
+                        }
+                        label_data.append(label_dict)
+
+                return JsonResponse({"status": status.HTTP_200_OK, "message": "success", "user_id": user_id, "data": label_data})
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
-            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
+            return Response({"status": status.HTTP_500_INTERNAL_SERVER_ERROR, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
 
-class ProjectLabelUpdate(APIView):
+
+
+
+class ProjectLabelDelete(APIView):
     renderer_classes = [UserRenderer]
         
     def get_object(self, pk):
@@ -640,15 +674,6 @@ class ProjectLabelUpdate(APIView):
                 return ProjectLabel.objects.get(pk=pk)
             except ProjectLabel.DoesNotExist:
                 raise Http404
-    
-    def put(self,request,pk,format=None):
-        product = self.get_object(pk)
-        serializer = ProjectLabel_Serializer(product, data=request.data,partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            data={"id":serializer.data['id'],"project_id":str(serializer.data['projectId']),"required":serializer.data['required'],"project_label":serializer.data['project_label']}
-            return Response({"status":status.HTTP_200_OK,'message':'success','data':data})
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
    
     def delete(self, request, pk, format=None):
         product = self.get_object(pk)
