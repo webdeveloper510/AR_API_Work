@@ -30,16 +30,37 @@ def forget_password_mail(email, access_token):
 class UserRegistrationView(views.APIView):
     permission_classes = (AllowAny,)
     def post(self,request,format=None):
+            firstname=request.data.get('firstname') 
+            lastname=request.data.get('lastname') 
+            email=request.data.get('email') 
+            password=request.data.get('password') 
+            image=request.data.get('image') 
+            dateofbirth=request.data.get('dateofbirth') 
+            proffession=request.data.get('proffession') 
             serializer=UserRegister(data=request.data)
-            if serializer.is_valid(raise_exception=True):
-                user=serializer.save()
-                email=serializer.data['email']
-                if user is not None:
-                    token=get_tokens_for_user(user)
-                    access_token = token['access']
-                    verify_email(email,access_token)
+            if User.objects.filter(email=email,Is_verified=False).exists():
+                user=User.objects.filter(email=email).first()
+                User.objects.update(firstname=firstname,lastname=lastname,
+                                    image=image,dateofbirth=dateofbirth,proffession=proffession)
+                user.set_password(password)
+                user.save()
+                token=get_tokens_for_user(user)
+                access_token = token['access']
+                verify_email(email,access_token)
+                return Response({'status':status.HTTP_201_CREATED,'msg':'Email Verification link sent to your email','token':access_token})
+            else:    
+                
+                if serializer.is_valid(raise_exception=True):
+                    user=serializer.save()
+                    email=email
+                    if user is not None:
+                        token=get_tokens_for_user(user)
+                        access_token = token['access']
+                        verify_email(email,access_token)
                     return Response({'status':status.HTTP_201_CREATED,'msg':'Email Verification link sent to your email','token':access_token})
             return Response({errors:serializer.errors},status=status.HTTP_400_BAD_REQUEST)
+
+
        
 class ResendVerifyEmail(views.APIView):
     renderer_classes=[UserRenderer]
@@ -399,6 +420,7 @@ class ProjectDetailView(APIView):
             product = self.get_object(pk)
             serializer = CreateProjectSerializer(product)
             qrcode_data=Project_ID_QR_Code.objects.filter(project_id=serializer.data['id']).values('qr_code_url')
+            
             response_data = {
                 "id": str(serializer.data['id']),
                 "imagePro": urljoin(url, serializer.data['imagePro']) if serializer.data['imagePro'] else None,
@@ -443,7 +465,6 @@ class ProjectDetailView(APIView):
 
 
 # LIST OF PROJECTS BY USER_ID
-
 
 class ListProjectView(APIView):
     

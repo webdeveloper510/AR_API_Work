@@ -1771,137 +1771,137 @@ class Get_targetImageByProjectId(APIView):
 
 
 
-# class TestSceneView(APIView):
-#     def get(self, request, pk):
-#         if not Scene.objects.filter(id=pk).exists():
-#             return Response({"message": "Data Not Found"}, status=status.HTTP_400_BAD_REQUEST)
+class TestSceneView(APIView):
+    def get(self, request, pk):
+        if not Scene.objects.filter(id=pk).exists():
+            return Response({"message": "Data Not Found"}, status=status.HTTP_400_BAD_REQUEST)
 
-#         scene_array = self.get_scene_data(pk)
-#         button_array = self.get_button_data(pk)
-#         text_array = self.get_text_data(pk)
-#         image_array = self.get_image_data(pk)
-#         video_array = self.get_video_data(pk)
-#         threed_array = self.get_threed_data(pk)
+        scene_array = self.get_scene_data(pk)
+        button_array = self.get_button_data(pk)
+        text_array = self.get_text_data(pk)
+        image_array = self.get_image_data(pk)
+        video_array = self.get_video_data(pk)
+        threed_array = self.get_threed_data(pk)
 
-#         array = [{"id": pk, "scene_data": scene_array, "button_data": button_array, "text_data": text_array,
-#                   "image_data": image_array, "video_data": video_array, "ThreeDmodeldata": threed_array}]
-#         return Response({"message": "Success", "data": array}, status=status.HTTP_200_OK)
+        array = [{"id": pk, "scene_data": scene_array, "button_data": button_array, "text_data": text_array,
+                  "image_data": image_array, "video_data": video_array, "ThreeDmodeldata": threed_array}]
+        return Response({"message": "Success", "data": array}, status=status.HTTP_200_OK)
 
-#     def get_scene_data(self, pk):
-#         scene_array = []
-#         scenes = Scene.objects.filter(id=pk).order_by('id')
-#         serializer = SceneSerializer(scenes, many=True)
-#         for scene_data in serializer.data:
-#             scene_id=scene_data['id']
-#             scene_name=scene_data['name']
-#             FeaturedtrackerOption=scene_data['FeaturedtrackerOption']
-#             if scene_id==pk:
-#                 scene_transition=list(Scene_Transition.objects.filter(scene_id=scene_id).values())
-#                 scene_photoUI=list(Scene_PhotoUI.objects.filter(scene_id=scene_id).values())
-#                 scene_transition_dict = scene_transition[0] if scene_transition else {}
-#                 scene_photoUI_dict = scene_photoUI[0] if scene_photoUI else {}
-#                 scene_dict_array = [
-#                     {
-#                     "scene_name":scene_name,
-#                     "FeaturedtrackerOption":FeaturedtrackerOption,
-#                     "scene_transition": scene_transition_dict,
-#                     "scene_photoUI":scene_photoUI_dict ,
-#                     }]
-#                 scene_array.append(scene_dict_array)
-#         return scene_array
+    def get_scene_data(self, pk):
+        scene_array = []
+        scenes = Scene.objects.filter(id=pk).order_by('id')
+        serializer = SceneSerializer(scenes, many=True)
+        for scene_data in serializer.data:
+            scene_id=scene_data['id']
+            scene_name=scene_data['name']
+            FeaturedtrackerOption=scene_data['FeaturedtrackerOption']
+            if scene_id==pk:
+                scene_transition=list(Scene_Transition.objects.filter(scene_id=scene_id).values())
+                scene_photoUI=list(Scene_PhotoUI.objects.filter(scene_id=scene_id).values())
+                scene_transition_dict = scene_transition[0] if scene_transition else {}
+                scene_photoUI_dict = scene_photoUI[0] if scene_photoUI else {}
+                scene_dict_array = [
+                    {
+                    "scene_name":scene_name,
+                    "FeaturedtrackerOption":FeaturedtrackerOption,
+                    "scene_transition": scene_transition_dict,
+                    "scene_photoUI":scene_photoUI_dict ,
+                    }]
+                scene_array.append(scene_dict_array)
+        return scene_array
 
 
-#     def get_button_data(self, pk):
-#         button_array=[]
-#         button=Create_Button.objects.all().order_by('id')
-#         serializer_class=ButtonSerializer(button,many=True)
-#         for createbuttondata in serializer_class.data:
-#             scene_id=createbuttondata['scene_id']
-#             if scene_id==pk:
-#                 button_id=createbuttondata['id']
-#                 button_name=createbuttondata['Button_name']
-#                 button_transform=list(Button_Transform.objects.filter(button_Id=button_id).values())
-#                 button_transition=list(Button_Transition.objects.filter(button_Id=button_id).values())
-#                 button_text=list(Button_Text.objects.filter(button_Id=button_id).values())
-#                 button_appearance=list(Button_Appearance.objects.filter(button_Id=button_id).values())
-#                 button_action=list(Button_Action.objects.filter(button_Id=button_id).values())
-#                 button_transition_dict = button_transition[0] if button_transition else {}
-#                 button_transform_dict = button_transform[0] if button_transform else {}
-#                 button_text_dict = button_text[0] if button_text else {}
-#                 button_appearance_dict = button_appearance[0] if button_appearance else {}
-#                 button_action_dict = button_action[0] if button_action else {}
-#                 button_dict_array = [
-#                     {
-#                     "button_id":button_id,
-#                     "button_name":button_name,  
-#                     "button_transition": button_transition_dict,
-#                     "button_transform": button_transform_dict,
-#                     "button_text": button_text_dict,
-#                     "button_appearance": button_appearance_dict,
-#                     "button_action": button_action_dict}]
+    def get_button_data(self, pk):
+        button_array=[]
+        button=Create_Button.objects.all().order_by('id')
+        serializer_class=ButtonSerializer(button,many=True)
+        for createbuttondata in serializer_class.data:
+            scene_id=createbuttondata['scene_id']
+            if scene_id==pk:
+                button_id=createbuttondata['id']
+                button_name=createbuttondata['Button_name']
+                button_transform=list(Button_Transform.objects.filter(button_Id=button_id).values())
+                button_transition=list(Button_Transition.objects.filter(button_Id=button_id).values())
+                button_text=list(Button_Text.objects.filter(button_Id=button_id).values())
+                button_appearance=list(Button_Appearance.objects.filter(button_Id=button_id).values())
+                button_action=list(Button_Action.objects.filter(button_Id=button_id).values())
+                button_transition_dict = button_transition[0] if button_transition else {}
+                button_transform_dict = button_transform[0] if button_transform else {}
+                button_text_dict = button_text[0] if button_text else {}
+                button_appearance_dict = button_appearance[0] if button_appearance else {}
+                button_action_dict = button_action[0] if button_action else {}
+                button_dict_array = [
+                    {
+                    "button_id":button_id,
+                    "button_name":button_name,  
+                    "button_transition": button_transition_dict,
+                    "button_transform": button_transform_dict,
+                    "button_text": button_text_dict,
+                    "button_appearance": button_appearance_dict,
+                    "button_action": button_action_dict}]
                 
                 
-#                 button_array.append(button_dict_array)
-#         return button_array
+                button_array.append(button_dict_array)
+        return button_array
 
-#     def get_text_data(self, pk):
-#         text=Create_Text.objects.all().order_by('id')
-#         serializer_class1=CreateText_Serializer(text,many=True)
-#         text_array=[]
-#         for create_text_data in serializer_class1.data:
-#             scene_id=create_text_data['scene_id']
-#             if scene_id==pk:
-#                 text_name=create_text_data['Text_name']
-#                 text_id=create_text_data['id']
-#                 text_transform=list(Text_Transform.objects.filter(text_id=text_id).values())
-#                 text_action=list(Text_Action.objects.filter(text_id=text_id).values())
-#                 text_transition=list(Text_Transition.objects.filter(text_id=text_id).values())
-#                 text_text=list(Text_Text.objects.filter(text_id=text_id).values())
-#                 text_transform_dict = text_transform[0] if text_transform else {}
-#                 text_action_dict = text_action[0] if text_action else {}
-#                 text_transition_dict = text_transition[0] if text_transition else {}
-#                 text_text_dict = text_text[0] if text_text else {}
-#                 text_dict_array = [
-#                     {
-#                     "text_id":text_id,
-#                     "button_name":text_name,  
-#                     "text_transition": text_transition_dict,
-#                     "text_transform": text_transform_dict,
-#                     "text_text": text_text_dict,
-#                     "text_action": text_action_dict}]
-#                 text_array.append(text_dict_array)
-#         return text_array
+    def get_text_data(self, pk):
+        text=Create_Text.objects.all().order_by('id')
+        serializer_class1=CreateText_Serializer(text,many=True)
+        text_array=[]
+        for create_text_data in serializer_class1.data:
+            scene_id=create_text_data['scene_id']
+            if scene_id==pk:
+                text_name=create_text_data['Text_name']
+                text_id=create_text_data['id']
+                text_transform=list(Text_Transform.objects.filter(text_id=text_id).values())
+                text_action=list(Text_Action.objects.filter(text_id=text_id).values())
+                text_transition=list(Text_Transition.objects.filter(text_id=text_id).values())
+                text_text=list(Text_Text.objects.filter(text_id=text_id).values())
+                text_transform_dict = text_transform[0] if text_transform else {}
+                text_action_dict = text_action[0] if text_action else {}
+                text_transition_dict = text_transition[0] if text_transition else {}
+                text_text_dict = text_text[0] if text_text else {}
+                text_dict_array = [
+                    {
+                    "text_id":text_id,
+                    "button_name":text_name,  
+                    "text_transition": text_transition_dict,
+                    "text_transform": text_transform_dict,
+                    "text_text": text_text_dict,
+                    "text_action": text_action_dict}]
+                text_array.append(text_dict_array)
+        return text_array
 
-#     def get_image_data(self, pk):
-#         image=ImageDesign.objects.all().order_by('id')
-#         serializer_class2=ImageDesignSerializer(image,many=True)
-#         image_array=[]
-#         for image_data in serializer_class2.data:
-#             scene_id=image_data['scene_id']
-#             if scene_id==pk:
-#                 image_id=image_data['id']
-#                 image_url = urljoin(url,image_data['image'])
-#                 image_transform=list(Image_Transform.objects.filter(image_id=image_id).values())
-#                 image_appearance=list(Image_Appearance.objects.filter(image_id=image_id).values())
-#                 image_action=list(Image_Action.objects.filter(image_id=image_id).values())
-#                 image_transition=list(Image_Transition.objects.filter(image_id=image_id).values())
-#                 image_transform_dict = image_transform[0] if image_transform else {}
-#                 image_appearance_dict = image_appearance[0] if image_appearance else {}
-#                 image_action_dict = image_action[0] if image_action else {}
-#                 image_transition_dict = image_transition[0] if image_transition else {}
-#                 image_dict_array = [
-#                     {
-#                     "image_id":image_id,
-#                     "image_url":image_url,  
-#                     "image_transform": image_transform_dict,
-#                     "image_appearance": image_appearance_dict,
-#                     "image_action": image_action_dict,
-#                     "image_transition":image_transition_dict}]
-#                 image_array.append(image_dict_array)
-#         return image_array
+    def get_image_data(self, pk):
+        image=ImageDesign.objects.all().order_by('id')
+        serializer_class2=ImageDesignSerializer(image,many=True)
+        image_array=[]
+        for image_data in serializer_class2.data:
+            scene_id=image_data['scene_id']
+            if scene_id==pk:
+                image_id=image_data['id']
+                image_url = urljoin(url,image_data['image'])
+                image_transform=list(Image_Transform.objects.filter(image_id=image_id).values())
+                image_appearance=list(Image_Appearance.objects.filter(image_id=image_id).values())
+                image_action=list(Image_Action.objects.filter(image_id=image_id).values())
+                image_transition=list(Image_Transition.objects.filter(image_id=image_id).values())
+                image_transform_dict = image_transform[0] if image_transform else {}
+                image_appearance_dict = image_appearance[0] if image_appearance else {}
+                image_action_dict = image_action[0] if image_action else {}
+                image_transition_dict = image_transition[0] if image_transition else {}
+                image_dict_array = [
+                    {
+                    "image_id":image_id,
+                    "image_url":image_url,  
+                    "image_transform": image_transform_dict,
+                    "image_appearance": image_appearance_dict,
+                    "image_action": image_action_dict,
+                    "image_transition":image_transition_dict}]
+                image_array.append(image_dict_array)
+        return image_array
 
-#     def get_video_data(self, pk):
-#       pass
+    def get_video_data(self, pk):
+      pass
 
-#     def get_threed_data(self, pk):
-#         pass
+    def get_threed_data(self, pk):
+        pass
