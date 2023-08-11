@@ -141,28 +141,26 @@ class ProfileView(APIView):
             return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
 
     
-
-
 class ForgetPasswordView(APIView):
-    renderer_classes = [UserRenderer]
-
+    renderer_classes=[UserRenderer]
     def post(self, request):
-        serializer = ForgetPasswordSerializer(data=request.data)
-        if serializer.is_valid():
-            email = serializer.validated_data["email"]
-            user = User.objects.filter(email=email).first()
+        email = request.data.get("email")
+        try:
+            if not email:
+                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "Email is required"},status=status.HTTP_400_BAD_REQUEST)
 
-            if user:
-                token = get_tokens_for_user(user)
+            user = User.objects.filter(email=email).first()
+            if not user:
+                 return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "User with this email does not exist"},status=status.HTTP_400_BAD_REQUEST)
+            else:
+                token = get_tokens_for_user(user) 
                 access_token = token['access']
                 forget_password_mail(email, access_token)
-                return Response({'status': status.HTTP_200_OK, 'msg': 'Forget password Link sent to your email', 'token': access_token})
-            else:
-                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "User with this email does not exist"}, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
+                return Response({'status': status.HTTP_200_OK, 'msg': 'Forget password Link sent to your email ','token':access_token})
+            
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
 
 class ResetPasswordView(APIView):
     renderer_classes=[UserRenderer]  
@@ -268,7 +266,7 @@ class CreateProjectList(APIView):
     renderer_classes=[UserRenderer]
     def post(self,request,format=None):
         serializer=CreateProject_Serializer(data=request.data)
-    
+       
         if serializer.is_valid(raise_exception=True):
             project=serializer.save()
             
@@ -285,7 +283,7 @@ class CreateProjectList(APIView):
             Project_ID=CreateProject.objects.get(id=serializer.data['id'])
             qr_data =Project_ID_QR_Code.objects.create(project_id=Project_ID,project_id_qr_code_url=project_url,qr_code_url=qr_code_url)
             return Response({'message':'Project Created successfully','data':data_dict, 'qr_code_url': qr_code_url},status=status.HTTP_201_CREATED)
-    
+        
         
           
             
