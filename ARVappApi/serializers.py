@@ -100,3 +100,10 @@ class UploadFile_Serializer(serializers.ModelSerializer):
            
      def create(self, validate_data):
          return UploadFile.objects.create(**validate_data)
+     
+class ForgetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+
+
+

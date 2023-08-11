@@ -74,7 +74,7 @@ class ResendVerifyEmail(views.APIView):
             return Response({'status': status.HTTP_200_OK, 'msg': 'Email Verification link sent to your email','token':access_token})
 
         except Exception as e:
-            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e)})
+            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e)},status=status.HTTP_400_BAD_REQUEST)
 
 class EmailVerified(views.APIView):
     renderer_classes=[UserRenderer]
@@ -95,7 +95,7 @@ class EmailVerified(views.APIView):
                 return Response({'status':status.HTTP_200_OK,'message':'Email verified successfully','data':data_dict})
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
-            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
+            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserLoginView(views.APIView):
@@ -123,7 +123,7 @@ class UserLoginView(views.APIView):
                     return Response({'detail': 'Logged in successfully.', 'token': token, 'data': userobj})
             except Exception as e:
                 exc_type, exc_obj, exc_tb = sys.exc_info()
-                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
+                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
                  
 
 class ProfileView(APIView):
@@ -138,29 +138,31 @@ class ProfileView(APIView):
             return Response(data_dict,status=status.HTTP_200_OK)
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
-            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
+            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
 
     
-class ForgetPasswordView(APIView):
-    renderer_classes=[UserRenderer]
-    def post(self, request):
-        email = request.data.get("email")
-        try:
-            if not email:
-                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "Email is required"})
 
+
+class ForgetPasswordView(APIView):
+    renderer_classes = [UserRenderer]
+
+    def post(self, request):
+        serializer = ForgetPasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data["email"]
             user = User.objects.filter(email=email).first()
-            if not user:
-                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "User with this email does not exist"})
-            else:
-                token = get_tokens_for_user(user) 
+
+            if user:
+                token = get_tokens_for_user(user)
                 access_token = token['access']
                 forget_password_mail(email, access_token)
-                return Response({'status': status.HTTP_200_OK, 'msg': 'Forget password Link sent to your email ','token':access_token})
-            
-        except Exception as e:
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
+                return Response({'status': status.HTTP_200_OK, 'msg': 'Forget password Link sent to your email', 'token': access_token})
+            else:
+                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "User with this email does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 class ResetPasswordView(APIView):
     renderer_classes=[UserRenderer]  
@@ -172,13 +174,13 @@ class ResetPasswordView(APIView):
             serializer = UserProfileSerializer(request.user)
             user = User.objects.filter(email=serializer.data['email']).first()
             if not user:
-                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "User with this email does not exist"})
+                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "User with this email does not exist"},status=status.HTTP_400_BAD_REQUEST)
             
             if not new_password:
-                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "New password is required"})
+                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "New password is required"},status=status.HTTP_400_BAD_REQUEST)
             
             if not confirm_password:
-                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "confirm  password is required"})
+                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "confirm  password is required"},status=status.HTTP_400_BAD_REQUEST)
             
             if new_password!=confirm_password:
                  return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "new password and confirm  password does not match"},status=status.HTTP_400_BAD_REQUEST)
@@ -191,7 +193,7 @@ class ResetPasswordView(APIView):
 
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
-            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
+            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
 
 class ChangePasswordView(APIView):
     renderer_classes=[UserRenderer]
@@ -215,7 +217,7 @@ class ChangePasswordView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
-            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
+            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
 
 
 class UpdateCustomerProfilePhoto(APIView):
@@ -235,7 +237,7 @@ class UpdateCustomerProfilePhoto(APIView):
             return Response({"message": "Your profile photo updated successfully"}, status=status.HTTP_200_OK)
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
-            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
+            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
 
 class UserLogoutView(views.APIView):
     permission_classes = (IsAuthenticated,)
@@ -246,7 +248,7 @@ class UserLogoutView(views.APIView):
             return Response({"status": status.HTTP_200_OK,'detail': 'Logged out successfully.'})
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
-            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
+            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
    
 
 # USER VIDEO UPLOAD FOR 3D MODEL
@@ -266,27 +268,25 @@ class CreateProjectList(APIView):
     renderer_classes=[UserRenderer]
     def post(self,request,format=None):
         serializer=CreateProject_Serializer(data=request.data)
-        try:
-            if serializer.is_valid(raise_exception=True):
-                project=serializer.save()
-                
-                data_dict={"id":serializer.data['id'],"projectType":serializer.data['projectType'],"triggerType":serializer.data['projectType'],
-                        "imagePro":urljoin(url,serializer.data['imagePro']),"ProTitle":serializer.data['ProTitle'],"projectIcon":urljoin(url,serializer.data['projectIcon']),
-                        "projectTitle":serializer.data['projectTitle'],"created_at":serializer.data['created_at'],"publish_key":serializer.data['publish_key'],
-                        "projectUser":serializer.data['projectUser']}
+    
+        if serializer.is_valid(raise_exception=True):
+            project=serializer.save()
             
-                project_url = "{}/{}/".format(Project_Id_Url,str(serializer.data['id']))
-                projectid_or_code = qrcode.make(project_url)
-                qr_code_path = f"static/media/projectid_image_qrcode/{serializer.data['id']}.png"
-                projectid_or_code.save(qr_code_path)
-                qr_code_url= "{}/{}/".format(url,qr_code_path)
-                Project_ID=CreateProject.objects.get(id=serializer.data['id'])
-                qr_data =Project_ID_QR_Code.objects.create(project_id=Project_ID,project_id_qr_code_url=project_url,qr_code_url=qr_code_url)
-                return Response({'message':'Project Created successfully','data':data_dict, 'qr_code_url': qr_code_url},status=status.HTTP_201_CREATED)
+            data_dict={"id":serializer.data['id'],"projectType":serializer.data['projectType'],"triggerType":serializer.data['projectType'],
+                    "imagePro":urljoin(url,serializer.data['imagePro']),"ProTitle":serializer.data['ProTitle'],"projectIcon":urljoin(url,serializer.data['projectIcon']),
+                    "projectTitle":serializer.data['projectTitle'],"created_at":serializer.data['created_at'],"publish_key":serializer.data['publish_key'],
+                    "projectUser":serializer.data['projectUser']}
         
-        except Exception as e:
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})    
+            project_url = "{}/{}/".format(Project_Id_Url,str(serializer.data['id']))
+            projectid_or_code = qrcode.make(project_url)
+            qr_code_path = f"static/media/projectid_image_qrcode/{serializer.data['id']}.png"
+            projectid_or_code.save(qr_code_path)
+            qr_code_url= "{}/{}/".format(url,qr_code_path)
+            Project_ID=CreateProject.objects.get(id=serializer.data['id'])
+            qr_data =Project_ID_QR_Code.objects.create(project_id=Project_ID,project_id_qr_code_url=project_url,qr_code_url=qr_code_url)
+            return Response({'message':'Project Created successfully','data':data_dict, 'qr_code_url': qr_code_url},status=status.HTTP_201_CREATED)
+    
+        
           
             
 class PublishProject(APIView):
@@ -298,13 +298,13 @@ class PublishProject(APIView):
         
         try:
             if not project_id:
-                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "project_id required"})
+                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "project_id required"},status=status.HTTP_400_BAD_REQUEST)
 
             if not CreateProject.objects.filter(id=project_id).exists():
-                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "project does not exist"})
+                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "project does not exist"},status=status.HTTP_400_BAD_REQUEST)
 
             if not publish_key:
-                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "publish_key required"})
+                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "publish_key required"},status=status.HTTP_400_BAD_REQUEST)
 
             last_inserted_data = Project_ID_QR_Code.objects.filter(project_id=project_id).latest('id')
             if publish_key=='True':
@@ -355,7 +355,7 @@ class PublishProject(APIView):
 
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
-            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
+            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
 
 
  
@@ -366,10 +366,10 @@ class GetPublish_Project_list(APIView):
     def get(self, request,user_id ,format=None):
         try:
             if not user_id:
-                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "User is required"})
+                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "User is required"},status=status.HTTP_400_BAD_REQUEST)
 
             if not User.objects.filter(id=user_id).exists():
-                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "User does not exist"})
+                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "User does not exist"},status=status.HTTP_400_BAD_REQUEST)
 
             User_data = User.objects.filter(id=user_id).first()
 
@@ -397,7 +397,7 @@ class GetPublish_Project_list(APIView):
             return Response({"status": status.HTTP_200_OK, "message": "success", "data": response_data})
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
-            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
+            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -435,7 +435,7 @@ class ProjectDetailView(APIView):
             return Response({"status":status.HTTP_200_OK,"project_details":response_data})
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
-            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
+            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
 
 
     def put(self, request, pk):
@@ -448,7 +448,7 @@ class ProjectDetailView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
-            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
+            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
         try:
@@ -457,7 +457,7 @@ class ProjectDetailView(APIView):
             return Response({"message":"project deleted successfully"},status=status.HTTP_200_OK)
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
-            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
+            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
 
 
 # LIST OF PROJECTS BY USER_ID
@@ -490,7 +490,7 @@ class ListProjectView(APIView):
             return Response({"status":status.HTTP_200_OK,"projectlist":response})
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
-            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
+            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
 
 
 class UpdateProjectView(APIView):
@@ -539,7 +539,7 @@ class UpdateProjectView(APIView):
                 return Response({"message": "Not Found"}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
-            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
+            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -586,16 +586,16 @@ class CreateProjectLabel(APIView):
             required = request.data.get('required')
             if ProjectLabel.objects.filter(projectId=project_id, project_label=project_label,user_id=user_id).exists():
                 if not user_id:
-                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "user_id is required"})
+                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "user_id is required"},status=status.HTTP_400_BAD_REQUEST)
                 
                 if not User.objects.filter(id=user_id).exists():
-                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "user does not exist"})
+                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "user does not exist"},status=status.HTTP_400_BAD_REQUEST)
                 
                 if not project_id:
-                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "project_id is required"})
+                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "project_id is required"},status=status.HTTP_400_BAD_REQUEST)
                 
                 if not CreateProject.objects.filter(id=project_id).exists():
-                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "project does not exist"})
+                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "project does not exist"},status=status.HTTP_400_BAD_REQUEST)
                 
                 label_data = ProjectLabel.objects.filter(projectId=project_id, project_label=project_label).update(project_label=project_label, required=required)
                 updated_label = ProjectLabel.objects.get(projectId=project_id, project_label=project_label)
@@ -604,19 +604,19 @@ class CreateProjectLabel(APIView):
             
             else:
                 if not user_id:
-                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "user_id is required"})
+                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "user_id is required"},status=status.HTTP_400_BAD_REQUEST)
                 
                 if not User.objects.filter(id=user_id).exists():
-                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "user does not exist"})
+                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "user does not exist"},status=status.HTTP_400_BAD_REQUEST)
                 
                 if not project_id:
-                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "project_id is required"})
+                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "project_id is required"},status=status.HTTP_400_BAD_REQUEST)
                 
                 if not CreateProject.objects.filter(id=project_id).exists():
-                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "project does not exist"})
+                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "project does not exist"},status=status.HTTP_400_BAD_REQUEST)
                 
                 if not project_label:
-                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "Label is required"})
+                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "Label is required"},status=status.HTTP_400_BAD_REQUEST)
                 
                 else:
                     ProjectID = CreateProject.objects.get(id=project_id)
@@ -630,7 +630,7 @@ class CreateProjectLabel(APIView):
         
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
-            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
+            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
 
 
 class ProjectLabelList(APIView):
@@ -639,7 +639,7 @@ class ProjectLabelList(APIView):
     def get(self, request, user_id, format=None):
         try:
             if not ProjectLabel.objects.filter(user_id=user_id).exists():
-                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "User with label does not exist"})
+                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "User with label does not exist"},status=status.HTTP_400_BAD_REQUEST)
             else:
                 product = ProjectLabel.objects.filter(user_id=user_id).order_by('id')
                 serializer = ProjectLabel_Serializer(product, many=True)
@@ -661,7 +661,7 @@ class ProjectLabelList(APIView):
                 return JsonResponse({"status": status.HTTP_200_OK, "message": "success", "user_id": user_id, "data": label_data})
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
-            return Response({"status": status.HTTP_500_INTERNAL_SERVER_ERROR, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
+            return Response({"status": status.HTTP_500_INTERNAL_SERVER_ERROR, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -686,14 +686,14 @@ class UploadFileAPIView(APIView):
         user_id=request.data.get('user_id')
         file=request.data.get('file')
         if not user_id:
-                return JsonResponse({"status": status.HTTP_400_BAD_REQUEST, "message": "user_id is required"})
+                return JsonResponse({"status": status.HTTP_400_BAD_REQUEST, "message": "user_id is required"},status=status.HTTP_400_BAD_REQUEST)
         try:
             user = User.objects.get(id=user_id)
         except User.DoesNotExist:
-            return JsonResponse({"status": status.HTTP_400_BAD_REQUEST, "message": "user does not exist"})
+            return JsonResponse({"status": status.HTTP_400_BAD_REQUEST, "message": "user does not exist"},status=status.HTTP_400_BAD_REQUEST)
         
         if not file:
-            return JsonResponse({"status": status.HTTP_400_BAD_REQUEST, "message": "file field is required"})
+            return JsonResponse({"status": status.HTTP_400_BAD_REQUEST, "message": "file field is required"},status=status.HTTP_400_BAD_REQUEST)
         try:
             serializer = UploadFile_Serializer(data=request.data)
             if serializer.is_valid():
@@ -707,7 +707,7 @@ class UploadFileAPIView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
-            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
+            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
 
 
 class GetUploadFilebyUser_id(APIView):
@@ -715,7 +715,7 @@ class GetUploadFilebyUser_id(APIView):
     def get(self, request, user_id,format=None):
         try:
             if not  UploadFile.objects.filter(user_id=user_id).exists():
-                return Response({"status":status.HTTP_400_BAD_REQUEST,"message":" user with label does not exist"})
+                return Response({"status":status.HTTP_400_BAD_REQUEST,"message":" user with label does not exist"},status=status.HTTP_400_BAD_REQUEST)
             else:
                 file = UploadFile.objects.all().order_by('id')
                 serializer = UploadFile_Serializer(file, many=True)
@@ -732,4 +732,4 @@ class GetUploadFilebyUser_id(APIView):
 
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
-            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)})
+            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
