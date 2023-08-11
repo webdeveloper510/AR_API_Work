@@ -28,36 +28,52 @@ def forget_password_mail(email, access_token):
 
 class UserRegistrationView(views.APIView):
     permission_classes = (AllowAny,)
-    def post(self,request,format=None):
-            firstname=request.data.get('firstname') 
-            lastname=request.data.get('lastname') 
-            email=request.data.get('email') 
-            password=request.data.get('password') 
-            image=request.data.get('image') 
-            dateofbirth=request.data.get('dateofbirth') 
-            proffession=request.data.get('proffession') 
-            serializer=UserRegister(data=request.data)
-            if User.objects.filter(email=email,Is_verified=False).exists():
-                user=User.objects.filter(email=email).first()
-                User.objects.update(firstname=firstname,lastname=lastname,
-                                    image=image,dateofbirth=dateofbirth,proffession=proffession)
-                user.set_password(password)
-                user.save()
-                token=get_tokens_for_user(user)
-                access_token = token['access']
-                verify_email(email,access_token)
-                return Response({'status':status.HTTP_201_CREATED,'msg':'Email Verification link sent to your email','token':access_token})
-            else:    
-                
-                if serializer.is_valid(raise_exception=True):
-                    user=serializer.save()
-                    email=email
-                    if user is not None:
-                        token=get_tokens_for_user(user)
-                        access_token = token['access']
-                        verify_email(email,access_token)
-                    return Response({'status':status.HTTP_201_CREATED,'msg':'Email Verification link sent to your email','token':access_token})
-            return Response({errors:serializer.errors},status=status.HTTP_400_BAD_REQUEST)
+
+    def post(self, request, format=None):
+        firstname = request.data.get('firstname') 
+        lastname = request.data.get('lastname') 
+        email = request.data.get('email') 
+        password = request.data.get('password') 
+        image = request.data.get('image') 
+        dateofbirth = request.data.get('dateofbirth') 
+        proffession = request.data.get('proffession') 
+        serializer = UserRegister(data=request.data)
+
+        if User.objects.filter(email=email, Is_verified=False).exists():
+            user = User.objects.filter(email=email).first()
+            user.firstname = firstname
+            user.lastname = lastname
+            user.image = image
+            user.dateofbirth = dateofbirth
+            user.proffession = proffession
+            user.set_password(password)
+            user.save()
+
+            token = get_tokens_for_user(user)
+            access_token = token['access']
+            verify_email(email, access_token)
+
+            return Response({
+                'status': status.HTTP_201_CREATED,
+                'msg': 'Email Verification link sent to your email',
+                'token': access_token
+            })
+
+        else:    
+            if serializer.is_valid(raise_exception=True):
+                user = serializer.save()
+                email = email
+                if user is not None:
+                    token = get_tokens_for_user(user)
+                    access_token = token['access']
+                    verify_email(email, access_token)
+                return Response({
+                    'status': status.HTTP_201_CREATED,
+                    'msg': 'Email Verification link sent to your email',
+                    'token': access_token
+                })
+
+        return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
        
 class ResendVerifyEmail(views.APIView):
     renderer_classes=[UserRenderer]
@@ -265,8 +281,27 @@ class VideoList(generics.ListCreateAPIView):
 class CreateProjectList(APIView):
     renderer_classes=[UserRenderer]
     def post(self,request,format=None):
-        serializer=CreateProject_Serializer(data=request.data)
+        projectType=request.data.get('projectType')
+        triggerType=request.data.get('triggerType')
+        projectUser=request.data.get('projectUser')
+        imagePro=request.data.get('imagePro')
+        ProTitle=request.data.get('ProTitle')
+        projectIcon=request.data.get('projectIcon')
+        projectTitle=request.data.get('projectTitle')
        
+        if not projectUser:
+            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "user required"},status=status.HTTP_400_BAD_REQUEST)
+
+        if not User.objects.filter(id=projectUser).exists():
+            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "user does not exist"},status=status.HTTP_400_BAD_REQUEST)
+        
+        if not projectType:
+            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": " project type is required"},status=status.HTTP_400_BAD_REQUEST)
+        
+        if not triggerType:
+            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": " triggerType is required"},status=status.HTTP_400_BAD_REQUEST)
+
+        serializer=CreateProject_Serializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             project=serializer.save()
             
@@ -283,9 +318,7 @@ class CreateProjectList(APIView):
             Project_ID=CreateProject.objects.get(id=serializer.data['id'])
             qr_data =Project_ID_QR_Code.objects.create(project_id=Project_ID,project_id_qr_code_url=project_url,qr_code_url=qr_code_url)
             return Response({'message':'Project Created successfully','data':data_dict, 'qr_code_url': qr_code_url},status=status.HTTP_201_CREATED)
-        
-        
-          
+                
             
 class PublishProject(APIView):
     renderer_classes = [UserRenderer]
@@ -356,7 +389,6 @@ class PublishProject(APIView):
             return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
 
 
- 
 #Publish List
 class GetPublish_Project_list(APIView):
     renderer_classes = [UserRenderer]
@@ -396,7 +428,6 @@ class GetPublish_Project_list(APIView):
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
-
 
 
 # PROJECTS DETAILS BY PROJECT ID
@@ -538,7 +569,6 @@ class UpdateProjectView(APIView):
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
-
 
 
 # class SaveGLTFModel(APIView):
