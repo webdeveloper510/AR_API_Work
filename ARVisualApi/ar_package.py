@@ -35,8 +35,8 @@ import numpy as np
 # image_url="http://127.0.0.1:8000/media/"
 image_url="http://3.109.213.210:8000/media/"
 
-# Project_Id_Url="http://127.0.0.1:3000/ar-web-view"
-Project_Id_Url="http://sayehbaz.ir/ar-web-view"
+# Project_Id_Url="http://127.0.0.1:3000/#/ar-web-view"
+Project_Id_Url="http://sayehbaz.ir/#/ar-web-view"
 # Verify_url="http://127.0.0.1:3000/#/verify-email"
 Verify_url="http://sayehbaz.ir/#/verify-email"
 # Forget_password_url="http://127.0.0.1:3000/#/forgot-password"
@@ -61,7 +61,7 @@ from rest_framework.decorators import action
 from rest_framework import status, views
 from rest_framework import generics
 from django.shortcuts import get_object_or_404
-# url="http://127.0.0.1:8000"
+url="http://127.0.0.1:8000"
 url="http://3.109.213.210:8000"
 from urllib.parse import urljoin
 from django.http import Http404
