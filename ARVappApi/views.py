@@ -113,7 +113,6 @@ class EmailVerified(views.APIView):
             exc_type, exc_obj, exc_tb = sys.exc_info()
             return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
 
-
 class UserLoginView(views.APIView):
 
     def post(self, request):
@@ -139,9 +138,8 @@ class UserLoginView(views.APIView):
                     return Response({'detail': 'Logged in successfully.', 'token': token, 'data': userobj})
             except Exception as e:
                 exc_type, exc_obj, exc_tb = sys.exc_info()
-                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
+                return Response({"status": status.HTTP_400_BAD_REQUEST, "detail": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
                  
-
 class ProfileView(APIView):
     renderer_classes=[UserRenderer]
     permission_classes=[IsAuthenticated]
@@ -155,7 +153,6 @@ class ProfileView(APIView):
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
-
     
 class ForgetPasswordView(APIView):
     renderer_classes=[UserRenderer]
@@ -233,7 +230,6 @@ class ChangePasswordView(APIView):
             exc_type, exc_obj, exc_tb = sys.exc_info()
             return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
 
-
 class UpdateCustomerProfilePhoto(APIView):
     renderer_classes = [UserRenderer]
     permission_classes = [IsAuthenticated]
@@ -264,7 +260,6 @@ class UserLogoutView(views.APIView):
             exc_type, exc_obj, exc_tb = sys.exc_info()
             return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
    
-
 # USER VIDEO UPLOAD FOR 3D MODEL
 
 class VideoList(generics.ListCreateAPIView):
@@ -275,9 +270,7 @@ class VideoList(generics.ListCreateAPIView):
         user = self.request.user
         video = Video.objects.all()
         return video
-    
-
-        
+         
 class CreateProjectList(APIView):
     renderer_classes=[UserRenderer]
     def post(self,request,format=None):
@@ -318,8 +311,7 @@ class CreateProjectList(APIView):
             Project_ID=CreateProject.objects.get(id=serializer.data['id'])
             qr_data =Project_ID_QR_Code.objects.create(project_id=Project_ID,project_id_qr_code_url=project_url,qr_code_url=qr_code_url)
             return Response({'message':'Project Created successfully','data':data_dict, 'qr_code_url': qr_code_url},status=status.HTTP_201_CREATED)
-                
-            
+                            
 class PublishProject(APIView):
     renderer_classes = [UserRenderer]
 
@@ -388,7 +380,6 @@ class PublishProject(APIView):
             exc_type, exc_obj, exc_tb = sys.exc_info()
             return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
 
-
 #Publish List
 class GetPublish_Project_list(APIView):
     renderer_classes = [UserRenderer]
@@ -428,7 +419,6 @@ class GetPublish_Project_list(APIView):
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
-
 
 # PROJECTS DETAILS BY PROJECT ID
 
@@ -487,7 +477,6 @@ class ProjectDetailView(APIView):
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
-
 
 # LIST OF PROJECTS BY USER_ID
 
@@ -601,7 +590,6 @@ project3dmodel_detail = SaveGLTFModel.as_view({
 })
 
 
-
 class CreateProjectLabel(APIView):
     renderer_classes = [UserRenderer]
 
@@ -660,7 +648,7 @@ class CreateProjectLabel(APIView):
             exc_type, exc_obj, exc_tb = sys.exc_info()
             return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
 
-
+#this api will not show duplicate project label of user
 class ProjectLabelList(APIView):
     renderer_classes = [UserRenderer]
 
@@ -690,9 +678,6 @@ class ProjectLabelList(APIView):
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             return Response({"status": status.HTTP_500_INTERNAL_SERVER_ERROR, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
-
-
-
 
 class ProjectLabelDelete(APIView):
     renderer_classes = [UserRenderer]
@@ -725,7 +710,7 @@ class UploadFileAPIView(APIView):
         try:
             serializer = UploadFile_Serializer(data=request.data)
             if serializer.is_valid():
-                file = serializer.save()
+                serializer.save()
                 data={
                     "id":serializer.data['id'],
                     "user_id":user_id,
@@ -736,7 +721,6 @@ class UploadFileAPIView(APIView):
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
-
 
 class GetUploadFilebyUser_id(APIView):
 
@@ -761,3 +745,93 @@ class GetUploadFilebyUser_id(APIView):
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
+
+class ZPT_Trained_File_View(APIView):
+    def post(self, request):
+        project_id=request.data.get('project_id')
+        file=request.data.get('file')
+       
+        if CreateProject.objects.filter(project_id=project_id).exists():
+            project = User.objects.filter(project_id=project_id).first()
+            project.file = file
+            project.save()
+
+
+        # if not project_id:
+        #         return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "project detail is required"},status=status.HTTP_400_BAD_REQUEST)
+        # try:
+        #     user = CreateProject.objects.get(id=project_id)
+        # except CreateProject.DoesNotExist:
+        #     return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "project does not exist"},status=status.HTTP_400_BAD_REQUEST)
+        
+        # if not file:
+        #     return JsonResponse({"status": status.HTTP_400_BAD_REQUEST, "message": "file field is required"},status=status.HTTP_400_BAD_REQUEST)
+        
+        serializer = ZPT_Trained_Model_Serializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            print("data---",serializer.data)
+        #     data={
+        #         "id":serializer.data['id'],
+        #         "project_id":project_id,
+        #         "zpt_file":urljoin(url,serializer.data['file'])
+        #     }
+        #     return Response({"status":status.HTTP_200_OK,'message':'file uploaded successfully','data':data})
+        return Response({"status":status.HTTP_200_OK,'message':'file uploaded successfully'})
+
+
+
+class ZPT_Trained_File_View(APIView):
+    def post(self, request):
+            project_id=str(request.data.get('project_id'))
+            file=request.data.get('file')
+            serializer = ZPT_Trained_Model_Serializer(data=request.data)
+            try:
+            
+                if not project_id:
+                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "project detail is required"},status=status.HTTP_400_BAD_REQUEST)
+                
+                if not file:
+                    return JsonResponse({"status": status.HTTP_400_BAD_REQUEST, "message": "file field is required"},status=status.HTTP_400_BAD_REQUEST)
+                
+                if ZPT_Trained_Model.objects.filter(project_id=project_id).exists():
+                    project = ZPT_Trained_Model.objects.filter(project_id=project_id).first()
+                    project.file = file
+                    project.save()
+                    data={
+                        "id":project.id,
+                        "project_id":project_id,
+                        "file":urljoin(background_url,str(project.file))
+                    }
+
+                    return Response({
+                        'status': status.HTTP_200_OK,
+                        'message': 'File updated successfully',
+                        'data':data
+                        
+                    })
+                else:
+                    if serializer.is_valid():
+                        file_data = serializer.save()
+                        data={
+                        "id":serializer.data['id'],
+                        "project_id":project_id,
+                        "file":urljoin(url,serializer.data['file'])
+                    }
+                    return Response({"status":status.HTTP_200_OK,'message':'file uploaded successfully','data':data})
+            except Exception as e:
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
+            
+class Get_ZPTFile_ByProjectId(APIView):
+    def get(self, request,project_id):
+            if  ZPT_Trained_Model.objects.filter(project_id=project_id).exists():
+                file = ZPT_Trained_Model.objects.filter(project_id=project_id).values('file')
+                file_data=file[0]['file']
+                file_url=urljoin(background_url,file_data)
+            
+                return Response({"data":file_url},status=status.HTTP_200_OK)
+            else:
+     
+                return Response({'message': 'No detail found with this project.'}, status=status.HTTP_404_NOT_FOUND)      

@@ -103,6 +103,10 @@ class UploadFile_Serializer(serializers.ModelSerializer):
      
 
 
-
-
-
+class ZPT_Trained_Model_Serializer(serializers.ModelSerializer):
+     class Meta:
+        model= ZPT_Trained_Model
+        fields = '__all__'
+           
+     def create(self, validate_data):
+         return ZPT_Trained_Model.objects.create(**validate_data)

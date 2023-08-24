@@ -29,7 +29,8 @@ urlpatterns = [
     path('logout/', views.UserLogoutView.as_view(), name='logout'),
     path('upload-file/', views.UploadFileAPIView.as_view(), name='upload-file'),
     path('GetuploadFile/<int:user_id>/', views.GetUploadFilebyUser_id.as_view(), name='upload-file'),
-    
+    path('Add-zpt-file/', views.ZPT_Trained_File_View.as_view(), name='zpt-file'),
+    path('get-zpt-file/<str:project_id>/', views.Get_ZPTFile_ByProjectId.as_view(), name='zpt-file'),
 
 ]
 

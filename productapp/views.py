@@ -1,27 +1,5 @@
-# from django.shortcuts import render
-# from productapp.models import *
-# from ARVappApi.models import *
-# from rest_framework import viewsets
-# from productapp.serializers import *
-# from rest_framework.views import APIView 
-# from rest_framework.response import Response
-# from django.views.decorators.csrf import csrf_exempt
-# from rest_framework.decorators import action
-# from rest_framework import status, views
-# from rest_framework import generics
-# from django.shortcuts import get_object_or_404
-# # url="http://127.0.0.1:8000"
-# url="http://3.109.213.210:8000"
-# from urllib.parse import urljoin
-# from django.http import Http404
-# # background_url="http://127.0.0.1:8000/media/"
-# background_url="http://3.109.213.210:8000/media/"
-# # Create button Api 
-# from productapp.utilities import URLEncrypter
-# import qrcode 
-# import sys
-
 from ARVisualApi.ar_package import *
+
 class ButtonAPIView(APIView):
     def post(self, request):
         try:
@@ -179,7 +157,7 @@ class GetButtonData(APIView):
        
        if Create_Button.objects.filter(id=pk).exists():
             array=[]
-            Button_data=Create_Button.objects.filter(id=pk).values('Button_name','project_id')
+            Button_data=Create_Button.objects.filter(id=pk).values('Button_name','scene_id')
             Button_t = Button_Transform.objects.all().order_by('id')
             serializer1=ButtonTransformSerializer(Button_t,many=True)
             Button_Transform_data={}
@@ -223,7 +201,7 @@ class GetButtonData(APIView):
                 if pk ==m['button_Id']:
                     button_action_data=m
                     button_action_array.append(button_action_data)
-            array=[{"id":pk,"project_id":Button_data[0]['project_id'],"Button_name":Button_data[0]['Button_name'],"Button_Transform":transform_array,"Button_Action":button_action_array,"Button_Transition":button_transition_array,"Button_Text":button_text_array,"button_appearance":button_appearance_array}]
+            array=[{"id":pk,"Button_name":Button_data[0]['Button_name'],"Button_Transform":transform_array,"Button_Action":button_action_array,"Button_Transition":button_transition_array,"Button_Text":button_text_array,"button_appearance":button_appearance_array}]
             return Response({"data":array},status=status.HTTP_200_OK)
        else:
              return Response({"message":"Button Not Found"},status=status.HTTP_200_OK)
@@ -252,6 +230,22 @@ class Create_TextAPIView(APIView):
             button = serializer_class.save()
             return Response(serializer_class.data, status=status.HTTP_201_CREATED)
         return Response(serializer_class.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class CreateTextAPIView(APIView):
+    def get_object(self, pk):
+        try:
+            return Create_Text.objects.get(pk=pk)
+        except Create_Text.DoesNotExist:
+             raise Http404
+    @csrf_exempt
+    def put(self, request, pk, format=None):
+        product = self.get_object(pk)
+        serializer = CreateText_Serializer(product, data=request.data,partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message':'Text  updated successfully'})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class Text_TransformAPIView(APIView):
     def post(self, request):
@@ -276,7 +270,6 @@ class TextTransformAPIView(APIView):
             serializer.save()
             return Response({'message':'Text transform updated successfully'})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 class Text_TransitionAPIView(APIView):
@@ -354,7 +347,7 @@ class GetAllTextData(APIView):
     def get(self, request,pk):
      if Create_Text.objects.filter(id=pk).exists():
         array=[]
-        Textdata=Create_Text.objects.filter(id=pk).values('Text_name','project_id')
+        Textdata=Create_Text.objects.filter(id=pk).values('Text_name','scene_id')
         Text = Text_Transform.objects.all().order_by('id')
         serializer1=TextTransformSerializer(Text,many=True)
         text_transform_array=[]
@@ -394,7 +387,7 @@ class GetAllTextData(APIView):
              if pk ==k['text_id']:
                 Text_data=k
                 text_array.append(Text_data)
-        array=[{"id":pk,"Textname":Textdata[0]['Text_name'],"project_id":Textdata[0]['project_id'],"Text_Transform":text_transform_array,"Text_Action":text_action_array,"Text_Transition":text_transition_array,"Text_data":text_array}]
+        array=[{"id":pk,"Textname":Textdata[0]['Text_name'],"scene_id":Textdata[0]['scene_id'],"Text_Transform":text_transform_array,"Text_Action":text_action_array,"Text_Transition":text_transition_array,"Text_data":text_array}]
         return Response({"message":"success","data":array},status=status.HTTP_200_OK)
      else:
         return Response({"message":"Data Not Found"},status=status.HTTP_400_BAD_REQUEST)
@@ -423,18 +416,23 @@ class UploadImageView(APIView):
             return Response(serializer_class.data, status=status.HTTP_201_CREATED)
         return Response(serializer_class.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    # def get_object(self, pk):
-    #     try:
-    #         return ImageDesign.objects.get(pk=pk)
-    #     except ImageDesign.DoesNotExist:
-    #         raise Http404
 
-    # def get(self, request, pk):
-    #     image= self.get_object(pk)
-    #     serializer = ImageDesignSerializer(image)
-    #     full_url = urljoin(url, serializer.data['image'])
-    #     data={"id":serializer.data['id'],"image":full_url,"project_id":serializer.data['project_id']}
-    #     return Response(data,status=status.HTTP_200_OK)
+class Upload_ImageView(APIView):
+    def get_object(self, pk):
+        try:
+            return ImageDesign.objects.get(pk=pk)
+        except ImageDesign.DoesNotExist:
+            raise Http404
+    
+    @csrf_exempt
+    def put(self, request, pk, format=None):
+        product = self.get_object(pk)
+        serializer = ImageDesignSerializer(product, data=request.data,partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message':'Image  updated successfully'})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class Image_TransformAPIView(APIView):
     def post(self, request):
@@ -542,7 +540,7 @@ class GetImageDataApiView(APIView):
          for i in serializer.data: 
              if pk==i['id']:
                  full_url = urljoin(url,i['image'])
-                 project_id=i['project_id']
+                 scene_id=i['scene_id']
         
          imaget = Image_Transform.objects.all().order_by('id')
          serializer1=ImageTransformSerializer(imaget,many=True)
@@ -581,7 +579,7 @@ class GetImageDataApiView(APIView):
                 image_action_array.append(Image_action_data)
 
 
-         array=[{"id":pk,"image":full_url,"project_id":project_id,"Image_Transform":image_transform_array,"Image_Transition":image_transition_array,"Image_Appearance":image_appearance_array,"Image_action":image_action_array}]
+         array=[{"id":pk,"image":full_url,"scene_id":scene_id,"Image_Transform":image_transform_array,"Image_Transition":image_transition_array,"Image_Appearance":image_appearance_array,"Image_action":image_action_array}]
        
          return Response({"message":"Success","data":array},status=status.HTTP_200_OK)
      else:
@@ -705,7 +703,7 @@ class GetVideoDataApiView(APIView):
          for i in serializer.data: 
              if pk==i['id']:
                  full_url = urljoin(url,i['video'])
-                 project_id=i['project_id']
+                 scene_id=i['scene_id']
         
          Videot = Video_Transform.objects.all().order_by('id')
          serializer1=VideoTransformSerializer(Videot,many=True)
@@ -734,7 +732,7 @@ class GetVideoDataApiView(APIView):
                 Video_Action_data=m
                 video_action_array.append(Video_Action_data)
 
-         array=[{"id":pk,"video":full_url,"project_id":project_id,"Video_Transform":video_transform_array,"Video_Transition":video_transition_array,"Video_action":video_action_array}]
+         array=[{"id":pk,"video":full_url,"scene_id":scene_id,"Video_Transform":video_transform_array,"Video_Transition":video_transition_array,"Video_action":video_action_array}]
        
          return Response({"message":"Success","data":array},status=status.HTTP_200_OK)
      else:
@@ -852,9 +850,6 @@ class ThreeDModelActionAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-
-
 class GetThreeDModelDataView(APIView):
     def get(self, request,pk):
      if ThreeDModelFile.objects.filter(id=pk).exists():
@@ -864,7 +859,7 @@ class GetThreeDModelDataView(APIView):
          for i in serializer.data: 
              if pk==i['id']:
                  full_url = urljoin(url,i['File'])
-                 project_id=i['project_id']
+                 scene_id=i['scene_id']
                
         
          threedt = ThreeDModel_Transform.objects.all().order_by('id')
@@ -894,7 +889,7 @@ class GetThreeDModelDataView(APIView):
                 threed_Action_data=m
                 threed_Action_array.append(threed_Action_data)
 
-         array=[{"id":pk,"file":full_url,"project_id":project_id,"ThreeD_Transform":threeDModel_Transform_array,"threeDModel_Transition":threeDModel_Transition_array,"threed_action":threed_Action_array}]
+         array=[{"id":pk,"file":full_url,"scene_id":scene_id,"ThreeD_Transform":threeDModel_Transform_array,"threeDModel_Transition":threeDModel_Transition_array,"threed_action":threed_Action_array}]
        
          return Response({"message":"Success","data":array},status=status.HTTP_200_OK)
      else:
@@ -1125,7 +1120,7 @@ class GetProjectContentData(APIView):
                  full_url=urljoin(url,i['target_image'])
                  scenproject_content_data ={"id":i['id'],"opacity":i['opacity'],"orientation":i['orientation'],
                                             "dimensions_w":i['dimensions_w'],"dimensions_h":i['dimensions_h'],
-                                            "units":i['units'],"project_Id":i['project_Id'],"target_image":full_url}
+                                            "units":i['units'],"project_Id":i['project_id'],"target_image":full_url}
                  project_content_array.append(scenproject_content_data)
     
          back_data = Background_Sound.objects.all().order_by('id')
@@ -1173,7 +1168,6 @@ class TwoD_ThreeD_Switch_APIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-from cryptography.fernet import Fernet
 
 class TwoD_ThreeDSwitchAPIView(APIView):
     
@@ -1766,9 +1760,6 @@ class Get_targetImageByProjectId(APIView):
             else:
      
                 return Response({'message': 'No detail found with this project.'}, status=status.HTTP_404_NOT_FOUND)
-
-
-
 
 
 class TestSceneView(APIView):

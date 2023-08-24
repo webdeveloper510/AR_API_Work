@@ -105,4 +105,9 @@ class ProjectLabel(models.Model):
 class UploadFile(models.Model):
     user_id=models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
     file=models.FileField(upload_to="File/")
+
+class ZPT_Trained_Model(models.Model):
+    project_id=models.ForeignKey(CreateProject,on_delete=models.CASCADE)
+    file=models.FileField(upload_to="ZPT_File/")
+     
      
