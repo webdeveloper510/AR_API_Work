@@ -32,6 +32,7 @@ urlpatterns = [
     path('Add-zpt-file/', views.ZPT_Trained_File_View.as_view(), name='zpt-file'),
     path('get-zpt-file/<str:project_id>/', views.Get_ZPTFile_ByProjectId.as_view(), name='zpt-file'),
 
+
 ]
 
 # serve static media files in development

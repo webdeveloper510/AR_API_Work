@@ -782,56 +782,70 @@ class ZPT_Trained_File_View(APIView):
 
 
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.http import JsonResponse
+from urllib.parse import urljoin
+import sys
+
 class ZPT_Trained_File_View(APIView):
     def post(self, request):
-            project_id=str(request.data.get('project_id'))
-            file=request.data.get('file')
-            serializer = ZPT_Trained_Model_Serializer(data=request.data)
-            try:
-            
-                if not project_id:
-                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "project detail is required"},status=status.HTTP_400_BAD_REQUEST)
-                
-                if not file:
-                    return JsonResponse({"status": status.HTTP_400_BAD_REQUEST, "message": "file field is required"},status=status.HTTP_400_BAD_REQUEST)
-                
-                if ZPT_Trained_Model.objects.filter(project_id=project_id).exists():
-                    project = ZPT_Trained_Model.objects.filter(project_id=project_id).first()
-                    project.file = file
-                    project.save()
-                    data={
-                        "id":project.id,
-                        "project_id":project_id,
-                        "file":urljoin(background_url,str(project.file))
-                    }
+        try:
+            project_id = request.data.get('project_id')
+            url = request.data.get('url')
 
-                    return Response({
-                        'status': status.HTTP_200_OK,
-                        'message': 'File updated successfully',
-                        'data':data
-                        
-                    })
-                else:
-                    if serializer.is_valid():
-                        file_data = serializer.save()
-                        data={
-                        "id":serializer.data['id'],
-                        "project_id":project_id,
-                        "file":urljoin(url,serializer.data['file'])
+            if not project_id:
+                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "project detail is required"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            if not url:
+                return JsonResponse({"status": status.HTTP_400_BAD_REQUEST, "message": "url field is required"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            if ZPT_Trained_Model.objects.filter(project_id=project_id).exists():
+                project = ZPT_Trained_Model.objects.filter(project_id=project_id).first()
+                project.url = url
+                project.save()
+                data = {
+                    "id": project.id,
+                    "project_id": project_id,
+                    "url": url
+                }
+
+                return Response({
+                    'status': status.HTTP_200_OK,
+                    'message': 'data updated successfully',
+                    'data': data
+                })
+            else:
+                serializer = ZPT_Trained_Model_Serializer(data=request.data)
+                
+                if serializer.is_valid():
+                    serializer.save()
+                    
+                    data = {
+                        "id": serializer.data['id'],
+                        "project_id": project_id,
+                        "url": serializer.data['url']
                     }
-                    return Response({"status":status.HTTP_200_OK,'message':'file uploaded successfully','data':data})
-            except Exception as e:
-                exc_type, exc_obj, exc_tb = sys.exc_info()
-                return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
+                    return Response({"status": status.HTTP_200_OK, 'message': 'data uploaded successfully', 'data': data})
+                else:
+                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)}, status=status.HTTP_400_BAD_REQUEST)
+
             
 class Get_ZPTFile_ByProjectId(APIView):
     def get(self, request,project_id):
             if  ZPT_Trained_Model.objects.filter(project_id=project_id).exists():
-                file = ZPT_Trained_Model.objects.filter(project_id=project_id).values('file')
-                file_data=file[0]['file']
-                file_url=urljoin(background_url,file_data)
+                url = ZPT_Trained_Model.objects.filter(project_id=project_id).values('url')
+                urldata=url[0]['url']
+               
             
-                return Response({"data":file_url},status=status.HTTP_200_OK)
+                return Response({"data":urldata},status=status.HTTP_200_OK)
             else:
      
-                return Response({'message': 'No detail found with this project.'}, status=status.HTTP_404_NOT_FOUND)      
+                return Response({'message': 'No detail found with this project.'}, status=status.HTTP_404_NOT_FOUND)  
+
+
+
