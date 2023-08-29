@@ -80,9 +80,6 @@ urlpatterns = [
     path('twod_threed/<int:pk>/', TwoD_ThreeDSwitchAPIView.as_view()),
     path('get_projectdata/<int:pk>/', ProjectAllDetailById.as_view()),
     path('user_projects_details/<int:user_id>/', UserDataAPIView.as_view()),
-    # path('testview/<int:pk>/', TestSceneView.as_view(), name='test'),
-    # recently added api 
-    # path('generate_qrcode_for_target_image/', TargetImageQRCodeView.as_view()),
     path('get_targetimage_by_projectid/<str:project_id>/', Get_targetImageByProjectId.as_view()),
     # path('update_publish_key/',Update_Publish_key.as_view()),
     # path('get_publish_data/<int:user_id>/',GetPublishProjectDetail.as_view()),
@@ -91,5 +88,3 @@ urlpatterns = [
    
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-# if settings.DEBUG:
-#     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -55,7 +55,6 @@ class ButtonTransformAPIView(APIView):
             return Response({'message':'Button Transform updated successfully'})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 class Button_TransitionAPIView(APIView):
     def post(self, request):
         serializer = Button_TransitionSerializer(data=request.data)
@@ -64,7 +63,6 @@ class Button_TransitionAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-
 class ButtonTransitionAPIView(APIView):
     def get_object(self, pk):
         try:
@@ -79,7 +77,6 @@ class ButtonTransitionAPIView(APIView):
             serializer.save()
             return Response({'message':'Button Transition updated successfully'})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class Button_TextAPIView(APIView):
     def post(self, request):
@@ -127,7 +124,6 @@ class ButtonAppearanceAPIView(APIView):
             return Response({'message':'Button Appearance updated successfully'})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-
 class Button_ActionAPIView(APIView):
     def post(self, request):
         serializer = Button_ActionSerializer(data=request.data)
@@ -231,7 +227,6 @@ class Create_TextAPIView(APIView):
             return Response(serializer_class.data, status=status.HTTP_201_CREATED)
         return Response(serializer_class.errors, status=status.HTTP_400_BAD_REQUEST)
     
-
 class CreateTextAPIView(APIView):
     def get_object(self, pk):
         try:
@@ -255,7 +250,6 @@ class Text_TransformAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-
 class TextTransformAPIView(APIView):
     def get_object(self, pk):
         try:
@@ -270,7 +264,6 @@ class TextTransformAPIView(APIView):
             serializer.save()
             return Response({'message':'Text transform updated successfully'})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class Text_TransitionAPIView(APIView):
     def post(self, request):
@@ -318,7 +311,6 @@ class TextTextAPIView(APIView):
             serializer.save()
             return Response({'message':'Text  updated successfully'})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class Text_ActionAPIView(APIView):
     def post(self, request):
@@ -416,7 +408,6 @@ class UploadImageView(APIView):
             return Response(serializer_class.data, status=status.HTTP_201_CREATED)
         return Response(serializer_class.errors, status=status.HTTP_400_BAD_REQUEST)
     
-
 class Upload_ImageView(APIView):
     def get_object(self, pk):
         try:
@@ -432,7 +423,6 @@ class Upload_ImageView(APIView):
             serializer.save()
             return Response({'message':'Image  updated successfully'})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class Image_TransformAPIView(APIView):
     def post(self, request):
@@ -505,7 +495,6 @@ class ImageAppearanceAPIView(APIView):
             return Response({'message':'Image Appearance updated successfully'})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-
 class Image_ActionAPIView(APIView):
     def post(self, request):
         serializer = Image_ActionSerializer(data=request.data)
@@ -528,7 +517,6 @@ class ImageActionAPIView(APIView):
             serializer.save()
             return Response({'message':'Image Action updated successfully'})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 # Get all Image Data  
 class GetImageDataApiView(APIView):
@@ -646,7 +634,6 @@ class VideoTransformAPIView(APIView):
             return Response({'message':'Video Transform updated successfully'})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 class Video_TransitionAPIView(APIView):
     def post(self, request):
         serializer = Video_TransitionSerializer(data=request.data)
@@ -655,7 +642,6 @@ class Video_TransitionAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-
 class VideoTransitionAPIView(APIView):
     def get_object(self, pk):
         try:
@@ -797,7 +783,6 @@ class ThreeDModelTransformAPIView(APIView):
             return Response({'message':'3D model Transform updated successfully'})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 class ThreeDModel_TransitionAPIView(APIView):
     def post(self, request):
         serializer = ThreeDModel_TransitionSerializer(data=request.data)
@@ -806,7 +791,6 @@ class ThreeDModel_TransitionAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-
 class ThreeDModelTransitionAPIView(APIView):
     def get_object(self, pk):
         try:
@@ -848,7 +832,6 @@ class ThreeDModelActionAPIView(APIView):
             serializer.save()
             return Response({'message':'3D model action updated  successfully'})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class GetThreeDModelDataView(APIView):
     def get(self, request,pk):
@@ -938,7 +921,6 @@ class Scene_APIView(APIView):
             return Response({'message':'Scene updated  successfully','data':serializer.data})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 class Scene_TransitionAPIView(APIView):
     def post(self, request):
         serializer = Scene_TransitionSerializer(data=request.data)
@@ -947,7 +929,6 @@ class Scene_TransitionAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-
 class SceneTransitionAPIView(APIView):
     def get_object(self, pk):
         try:
@@ -1043,7 +1024,6 @@ class ProjectContent_APIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-
 class ProjectContentAPIView(APIView):
     def get_object(self, pk):
         try:
@@ -1106,7 +1086,6 @@ class AnalyticsAPIView(APIView):
             return Response({'message':'Analytics updated successfully'})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 class GetProjectContentData(APIView):
     def get(self, request,pk):
      if Project_Content.objects.filter(id=pk).exists():
@@ -1117,11 +1096,18 @@ class GetProjectContentData(APIView):
          scenproject_content_data={}
          for i in serializer.data: 
              if pk==i['id']:
-                 full_url=urljoin(url,i['target_image'])
-                 scenproject_content_data ={"id":i['id'],"opacity":i['opacity'],"orientation":i['orientation'],
-                                            "dimensions_w":i['dimensions_w'],"dimensions_h":i['dimensions_h'],
-                                            "units":i['units'],"project_Id":i['project_id'],"target_image":full_url}
-                 project_content_array.append(scenproject_content_data)
+                if i['target_image'] is not None:
+                    full_url=urljoin(url,i['target_image'])
+                    scenproject_content_data ={"id":i['id'],"opacity":i['opacity'],"orientation":i['orientation'],
+                                                "dimensions_w":i['dimensions_w'],"dimensions_h":i['dimensions_h'],
+                                                "units":i['units'],"project_Id":i['project_id'],"target_image":full_url}
+                    project_content_array.append(scenproject_content_data)
+                else:
+                    full_url=None
+                    scenproject_content_data ={"id":i['id'],"opacity":i['opacity'],"orientation":i['orientation'],
+                                                "dimensions_w":i['dimensions_w'],"dimensions_h":i['dimensions_h'],
+                                                "units":i['units'],"project_Id":i['project_id'],"target_image":full_url}
+                    project_content_array.append(scenproject_content_data)
     
          back_data = Background_Sound.objects.all().order_by('id')
          serializer2=Background_SoundSerializer(back_data,many=True)
@@ -1168,7 +1154,6 @@ class TwoD_ThreeD_Switch_APIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 class TwoD_ThreeDSwitchAPIView(APIView):
     
     def get_object(self, pk):
@@ -1193,7 +1178,6 @@ class TwoD_ThreeDSwitchAPIView(APIView):
             serializer.save()
             return Response({'message':'updated successfully'})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class ProjectAllDetailById(APIView):
     def get(self, request,pk):
@@ -1447,325 +1431,11 @@ class ProjectAllDetailById(APIView):
         except Project_Content.DoesNotExist:
             raise Http404
 
-
+# Get all button data,text data ,image_data,video data,threed data by scene id
 class SceneAllDetailById(APIView):
-    def get(self, request,pk):
-        array=[]
-        if Scene.objects.filter(id=pk).exists():
-
-            scene=Scene.objects.all().order_by('id')
-            serializer_class5=SceneSerializer(scene,many=True)
-            scene_array=[]
-            for scene_data in serializer_class5.data:
-                scene_id=scene_data['id']
-                scene_name=scene_data['name']
-                FeaturedtrackerOption=scene_data['FeaturedtrackerOption']
-                if scene_id==pk:
-                    scene_transition=list(Scene_Transition.objects.filter(scene_id=scene_id).values())
-                    scene_photoUI=list(Scene_PhotoUI.objects.filter(scene_id=scene_id).values())
-                    scene_transition_dict = scene_transition[0] if scene_transition else {}
-                    scene_photoUI_dict = scene_photoUI[0] if scene_photoUI else {}
-                    scene_dict_array = [
-                        {
-                        "scene_name":scene_name,
-                        "FeaturedtrackerOption":FeaturedtrackerOption,
-                        "scene_transition": scene_transition_dict,
-                        "scene_photoUI":scene_photoUI_dict ,
-                        }]
-                    scene_array.append(scene_dict_array)
-
-            button=Create_Button.objects.all().order_by('id')
-            serializer_class=ButtonSerializer(button,many=True)
-            button_array=[]
-            for createbuttondata in serializer_class.data:
-                scene_id=createbuttondata['scene_id']
-                if scene_id==pk:
-                    button_id=createbuttondata['id']
-                    button_name=createbuttondata['Button_name']
-                    button_transform=list(Button_Transform.objects.filter(button_Id=button_id).values())
-                    button_transition=list(Button_Transition.objects.filter(button_Id=button_id).values())
-                    button_text=list(Button_Text.objects.filter(button_Id=button_id).values())
-                    button_appearance=list(Button_Appearance.objects.filter(button_Id=button_id).values())
-                    button_action=list(Button_Action.objects.filter(button_Id=button_id).values())
-                    button_transition_dict = button_transition[0] if button_transition else {}
-                    button_transform_dict = button_transform[0] if button_transform else {}
-                    button_text_dict = button_text[0] if button_text else {}
-                    button_appearance_dict = button_appearance[0] if button_appearance else {}
-                    button_action_dict = button_action[0] if button_action else {}
-                    button_dict_array = [
-                        {
-                        "button_id":button_id,
-                        "button_name":button_name,  
-                        "button_transition": button_transition_dict,
-                        "button_transform": button_transform_dict,
-                        "button_text": button_text_dict,
-                        "button_appearance": button_appearance_dict,
-                        "button_action": button_action_dict}]
-                    
-                    
-                    button_array.append(button_dict_array)
-            
-            text=Create_Text.objects.all().order_by('id')
-            serializer_class1=CreateText_Serializer(text,many=True)
-            text_array=[]
-            for create_text_data in serializer_class1.data:
-                scene_id=create_text_data['scene_id']
-                if scene_id==pk:
-                    text_name=create_text_data['Text_name']
-                    text_id=create_text_data['id']
-                    text_transform=list(Text_Transform.objects.filter(text_id=text_id).values())
-                    text_action=list(Text_Action.objects.filter(text_id=text_id).values())
-                    text_transition=list(Text_Transition.objects.filter(text_id=text_id).values())
-                    text_text=list(Text_Text.objects.filter(text_id=text_id).values())
-                    text_transform_dict = text_transform[0] if text_transform else {}
-                    text_action_dict = text_action[0] if text_action else {}
-                    text_transition_dict = text_transition[0] if text_transition else {}
-                    text_text_dict = text_text[0] if text_text else {}
-                    text_dict_array = [
-                        {
-                        "text_id":text_id,
-                        "button_name":text_name,  
-                        "text_transition": text_transition_dict,
-                        "text_transform": text_transform_dict,
-                        "text_text": text_text_dict,
-                        "text_action": text_action_dict}]
-                    text_array.append(text_dict_array)
-            
-            image=ImageDesign.objects.all().order_by('id')
-            serializer_class2=ImageDesignSerializer(image,many=True)
-            image_array=[]
-            for image_data in serializer_class2.data:
-                scene_id=image_data['scene_id']
-                if scene_id==pk:
-                    image_id=image_data['id']
-                    image_url = urljoin(url,image_data['image'])
-                    image_transform=list(Image_Transform.objects.filter(image_id=image_id).values())
-                    image_appearance=list(Image_Appearance.objects.filter(image_id=image_id).values())
-                    image_action=list(Image_Action.objects.filter(image_id=image_id).values())
-                    image_transition=list(Image_Transition.objects.filter(image_id=image_id).values())
-                    image_transform_dict = image_transform[0] if image_transform else {}
-                    image_appearance_dict = image_appearance[0] if image_appearance else {}
-                    image_action_dict = image_action[0] if image_action else {}
-                    image_transition_dict = image_transition[0] if image_transition else {}
-                    image_dict_array = [
-                        {
-                        "image_id":image_id,
-                        "image_url":image_url,  
-                        "image_transform": image_transform_dict,
-                        "image_appearance": image_appearance_dict,
-                        "image_action": image_action_dict,
-                        "image_transition":image_transition_dict}]
-                    image_array.append(image_dict_array)
-            
-            video=UploadVideo.objects.all().order_by('id')
-            serializer_class3=UploadVideoSerializer(video,many=True)
-            video_array=[]
-            for video_data in serializer_class3.data:
-                scene_id=video_data['scene_id']
-                if scene_id==pk:
-                    video_id=video_data['id']
-                    video_url=urljoin(url,video_data['video'])
-                    video_transform=list(Video_Transform.objects.filter(video_id=video_id).values())
-                    video_action=list(Video_Action.objects.filter(video_id=video_id).values())
-                    video_transition=list(Video_Transition.objects.filter(video_id=video_id).values())
-                    video_transform_dict = video_transform[0] if video_transform else {}
-                    video_action_dict = video_action[0] if video_action else {}
-                    video_transition_dict = video_transition[0] if video_transition else {}
-                    video_dict_array = [
-                        {
-                        "video_id":video_id,
-                        "video_url":video_url,  
-                        "video_transform": video_transform_dict,
-                        "video_transition": video_transition_dict,
-                        "video_action": video_action_dict,
-                        }]
-                    video_array.append(video_dict_array)
-            threed=ThreeDModelFile.objects.all().order_by('id')
-            serializer_class4=ThreeDModelFileSerializer(threed,many=True)
-            threed_array=[]
-            for threed_data in serializer_class4.data:
-                scene_id=threed_data['scene_id']
-                if scene_id==pk:
-                    threed_id=threed_data['id']
-                    file_url=urljoin(url,threed_data['File'])
-                    threedModel_transform=list(ThreeDModel_Transform.objects.filter(ThreeDModel_id=threed_id).values())
-                    threedModel_action=list(ThreeDModel_Action.objects.filter(ThreeDModel_id=threed_id).values())
-                    threedModel_transition=list(ThreeDModel_Transition.objects.filter(ThreeDModel_id=threed_id).values())
-                    threedModel_transform_dict = threedModel_transform[0] if threedModel_transform else {}
-                    threedModel_action_dict = threedModel_action[0] if threedModel_action else {}
-                    threedModel_transition_dict = threedModel_transition[0] if threedModel_transition else {}
-                    threed_dict_array = [
-                        {
-                        "threed_id":threed_id,
-                        "file_url":file_url,  
-                        "threedModel_transform": threedModel_transform_dict,
-                        "threedModel_transition":threedModel_transition_dict ,
-                        "threedModel_action": threedModel_action_dict,
-                        }]
-                    threed_array.append(threed_dict_array)
-            array=[{"id":pk,"scene_data":scene_array,"button_data":button_array,"text_data":text_array,"image_data":image_array,"video_data":video_array,"ThreeDmodeldata":threed_array}]
-            return Response({"message":"Success","data":array},status=status. HTTP_200_OK)
-        else:
-            return Response({"message":"Data Not Found"},status=status.HTTP_400_BAD_REQUEST)
-    
-
-    def delete(self, request, pk):
-        try:
-            scene = get_object_or_404(Scene, id=pk)
-        
-            Scene.objects.filter(id=pk).delete()
-            Scene_Transition.objects.filter(scene_id__in=Scene.objects.filter(id=pk).values('id')).delete()
-            Scene_PhotoUI.objects.filter(scene_id__in=Scene.objects.filter(id=pk).values('id')).delete()
-            
-            Create_Button.objects.filter(scene_id=pk).delete()
-            Button_Transition.objects.filter(button_Id__in=Create_Button.objects.filter(scene_id=pk).values('id')).delete()
-            Button_Transition.objects.filter(button_Id__in=Create_Button.objects.filter(scene_id=pk).values('id')).delete()
-            Button_Text.objects.filter(button_Id__in=Create_Button.objects.filter(scene_id=pk).values('id')).delete()
-            Button_Appearance.objects.filter(button_Id__in=Create_Button.objects.filter(scene_id=pk).values('id')).delete()
-            Button_Action.objects.filter(button_Id__in=Create_Button.objects.filter(scene_id=pk).values('id')).delete()
-
-            Create_Text.objects.filter(scene_id=pk).delete()
-
-            Text_Transform.objects.filter(text_id__in=Create_Text.objects.filter(scene_id=pk).values('id')).delete()
-            Text_Action.objects.filter(text_id__in=Create_Text.objects.filter(scene_id=pk).values('id')).delete()
-            Text_Transition.objects.filter(text_id__in=Create_Text.objects.filter(scene_id=pk).values('id')).delete()
-            Text_Text.objects.filter(text_id__in=Create_Text.objects.filter(scene_id=pk).values('id')).delete()
-            
-            ImageDesign.objects.filter(scene_id=pk).delete()
-            Image_Transform.objects.filter(image_id__in=ImageDesign.objects.filter(scene_id=pk).values('id')).delete()
-            Image_Appearance.objects.filter(image_id__in=ImageDesign.objects.filter(scene_id=pk).values('id')).delete()
-            Image_Action.objects.filter(image_id__in=ImageDesign.objects.filter(scene_id=pk).values('id')).delete()
-            Image_Transition.objects.filter(image_id__in=ImageDesign.objects.filter(scene_id=pk).values('id')).delete()
-
-            UploadVideo.objects.filter(scene_id=pk).delete()
-            Video_Transform.objects.filter(video_id__in=UploadVideo.objects.filter(scene_id=pk).values('id')).delete()
-            Video_Action.objects.filter(video_id__in=UploadVideo.objects.filter(scene_id=pk).values('id')).delete()
-            Video_Transition.objects.filter(video_id__in=UploadVideo.objects.filter(scene_id=pk).values('id')).delete()
-
-            ThreeDModelFile.objects.filter(scene_id=pk).delete()
-            ThreeDModel_Transform.objects.filter(ThreeDModel_id__in=ThreeDModelFile.objects.filter(scene_id=pk).values('id')).delete()
-            ThreeDModel_Action.objects.filter(ThreeDModel_id__in=ThreeDModelFile.objects.filter(scene_id=pk).values('id')).delete()
-            ThreeDModel_Transition.objects.filter(ThreeDModel_id__in=ThreeDModelFile.objects.filter(scene_id=pk).values('id')).delete()
-
-            scene.delete()
-
-            return Response({"message":"scene data deleted  successfully"}, status=status.HTTP_200_OK)
-        
-        except Scene.DoesNotExist:
-            raise Http404
-
-
-class GetSceneByProjectId(APIView):
-    def get(self, request, pk):
-        scenes = Scene.objects.filter(project_id=pk).order_by('id')
-        serializer = SceneSerializer(scenes, many=True)
-        
-        project_content = Project_Content.objects.filter(project_id=pk).order_by('id')
-        project_content_serializer = Project_ContentSerializer(project_content, many=True)
-        
-        background_sound = Background_Sound.objects.filter(project_content_id__in=project_content).order_by('id')
-        background_sound_serializer = Background_SoundSerializer(background_sound, many=True)
-        
-        analytics = Analytics.objects.filter(project_content_id__in=project_content).order_by('id')
-        analytics_serializer = AnalyticsSerializer(analytics, many=True)
-        
-        if scenes.exists() or project_content.exists() or background_sound.exists() or analytics.exists():
-            data = {
-                'scenes': serializer.data,
-                'project_content': [
-                    {
-                        'id': pc['id'],
-                        'opacity': pc['opacity'],
-                        'target_image': urljoin(url, pc['target_image']) if pc['target_image'] else None,
-                        'orientation': pc['orientation'],
-                        'dimensions_w': pc['dimensions_w'],
-                        'dimensions_h': pc['dimensions_h'],
-                        'units': pc['units'],
-                    } for pc in project_content_serializer.data
-                ],
-                'background_sound': [
-                    {
-                        'project_content_id': bs['project_content_id'],
-                        'media_file':urljoin(url, bs['media_file']) if bs['media_file'] else None,
-                        
-                    } for bs in background_sound_serializer.data
-                ],
-                'analytics': analytics_serializer.data
-            }
-        else:
-
-            data = {'data':'No data found'}
-
-        return Response(data)
-
-
-
-class UserDataAPIView(APIView):
-    def get(self, request, user_id):
-        try:
-            user = User.objects.get(id=user_id)
-
-            create_projects = user.createproject_set.all()
-
-            image_designs = ImageDesign.objects.filter(scene_id__project_id__in=create_projects)
-            upload_videos = UploadVideo.objects.filter(scene_id__project_id__in=create_projects)
-            three_d_model_files = ThreeDModelFile.objects.filter(scene_id__project_id__in=create_projects)
-
-            image_design_serializer = ImageDesignSerializer(image_designs, many=True)
-            upload_video_serializer = UploadVideoSerializer(upload_videos, many=True)
-            three_d_model_file_serializer = ThreeDModelFileSerializer(three_d_model_files, many=True)
-            
-            image_array=[]
-            for images_data in image_design_serializer.data:
-                image_id=images_data['id']
-                image=urljoin(url,(images_data['image']))
-                image_dict={"image_id":image_id,"image_url":image}
-                image_array.append(image_dict)
-            
-            video_array=[]
-            for video_data in upload_video_serializer.data:
-                video_id=video_data['id']
-                video=urljoin(url,(video_data['video']))
-                video_dict={"video_id":video_id,"video_url":video}
-                video_array.append(video_dict)
-            
-            threed_array=[]
-            for threed_data in three_d_model_file_serializer.data:
-                threed_file_id=threed_data['id']
-                threed_file=urljoin(url,(threed_data['File']))
-                threed_dict={"threed_id":threed_file_id,"threed_url":threed_file}
-                threed_array.append(threed_dict)
-            
-            response_data = {
-                'image_designs':image_array,
-                'upload_videos': video_array,
-                'three_d_model_files':threed_array
-            }
-
-            return Response({"data":response_data},status=status.HTTP_200_OK)
-
-        except User.DoesNotExist:
-            return Response({'message': 'No detail found with this User.'}, status=status.HTTP_404_NOT_FOUND)
-
-
-
-class Get_targetImageByProjectId(APIView):
-    def get(self, request,project_id):
-            if  Project_Content.objects.filter(project_id=project_id).exists():
-                target_image = Project_Content.objects.filter(project_id=project_id).values('target_image')
-                target_data=target_image[0]['target_image']
-                targeturl=urljoin(background_url,target_data)
-            
-                return Response({"data":targeturl},status=status.HTTP_200_OK)
-            else:
-     
-                return Response({'message': 'No detail found with this project.'}, status=status.HTTP_404_NOT_FOUND)
-
-
-class TestSceneView(APIView):
     def get(self, request, pk):
         if not Scene.objects.filter(id=pk).exists():
-            return Response({"message": "Data Not Found"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"status":status.HTTP_400_BAD_REQUEST,"message": "Data Not Found"}, status=status.HTTP_400_BAD_REQUEST)
 
         scene_array = self.get_scene_data(pk)
         button_array = self.get_button_data(pk)
@@ -1776,7 +1446,7 @@ class TestSceneView(APIView):
 
         array = [{"id": pk, "scene_data": scene_array, "button_data": button_array, "text_data": text_array,
                   "image_data": image_array, "video_data": video_array, "ThreeDmodeldata": threed_array}]
-        return Response({"message": "Success", "data": array}, status=status.HTTP_200_OK)
+        return Response({"status":status.HTTP_200_OK,"message": "Success", "data": array}, status=status.HTTP_200_OK)
 
     def get_scene_data(self, pk):
         scene_array = []
@@ -1800,7 +1470,6 @@ class TestSceneView(APIView):
                     }]
                 scene_array.append(scene_dict_array)
         return scene_array
-
 
     def get_button_data(self, pk):
         button_array=[]
@@ -1892,7 +1561,205 @@ class TestSceneView(APIView):
         return image_array
 
     def get_video_data(self, pk):
-      pass
+        video=UploadVideo.objects.all().order_by('id')
+        serializer_class3=UploadVideoSerializer(video,many=True)
+        video_array=[]
+        for video_data in serializer_class3.data:
+            scene_id=video_data['scene_id']
+            if scene_id==pk:
+                video_id=video_data['id']
+                video_url=urljoin(url,video_data['video'])
+                video_transform=list(Video_Transform.objects.filter(video_id=video_id).values())
+                video_action=list(Video_Action.objects.filter(video_id=video_id).values())
+                video_transition=list(Video_Transition.objects.filter(video_id=video_id).values())
+                video_transform_dict = video_transform[0] if video_transform else {}
+                video_action_dict = video_action[0] if video_action else {}
+                video_transition_dict = video_transition[0] if video_transition else {}
+                video_dict_array = [
+                    {
+                    "video_id":video_id,
+                    "video_url":video_url,  
+                    "video_transform": video_transform_dict,
+                    "video_transition": video_transition_dict,
+                    "video_action": video_action_dict,
+                    }]
+                video_array.append(video_dict_array)
+                return video_array
 
     def get_threed_data(self, pk):
-        pass
+        threed=ThreeDModelFile.objects.all().order_by('id')
+        serializer_class4=ThreeDModelFileSerializer(threed,many=True)
+        threed_array=[]
+        for threed_data in serializer_class4.data:
+            scene_id=threed_data['scene_id']
+            if scene_id==pk:
+                threed_id=threed_data['id']
+                file_url=urljoin(url,threed_data['File'])
+                threedModel_transform=list(ThreeDModel_Transform.objects.filter(ThreeDModel_id=threed_id).values())
+                threedModel_action=list(ThreeDModel_Action.objects.filter(ThreeDModel_id=threed_id).values())
+                threedModel_transition=list(ThreeDModel_Transition.objects.filter(ThreeDModel_id=threed_id).values())
+                threedModel_transform_dict = threedModel_transform[0] if threedModel_transform else {}
+                threedModel_action_dict = threedModel_action[0] if threedModel_action else {}
+                threedModel_transition_dict = threedModel_transition[0] if threedModel_transition else {}
+                threed_dict_array = [
+                    {
+                    "threed_id":threed_id,
+                    "file_url":file_url,  
+                    "threedModel_transform": threedModel_transform_dict,
+                    "threedModel_transition":threedModel_transition_dict ,
+                    "threedModel_action": threedModel_action_dict,
+                    }]
+                threed_array.append(threed_dict_array)
+                return threed_array
+ 
+    
+
+    def delete(self, request, pk):
+        try:
+            scene = get_object_or_404(Scene, id=pk)
+        
+            Scene.objects.filter(id=pk).delete()
+            Scene_Transition.objects.filter(scene_id__in=Scene.objects.filter(id=pk).values('id')).delete()
+            Scene_PhotoUI.objects.filter(scene_id__in=Scene.objects.filter(id=pk).values('id')).delete()
+            
+            
+            Create_Button.objects.filter(scene_id=pk).delete()
+            Button_Transition.objects.filter(button_Id__in=Create_Button.objects.filter(scene_id=pk).values('id')).delete()
+            Button_Transition.objects.filter(button_Id__in=Create_Button.objects.filter(scene_id=pk).values('id')).delete()
+            Button_Text.objects.filter(button_Id__in=Create_Button.objects.filter(scene_id=pk).values('id')).delete()
+            Button_Appearance.objects.filter(button_Id__in=Create_Button.objects.filter(scene_id=pk).values('id')).delete()
+            Button_Action.objects.filter(button_Id__in=Create_Button.objects.filter(scene_id=pk).values('id')).delete()
+
+            Create_Text.objects.filter(scene_id=pk).delete()
+            Text_Transform.objects.filter(text_id__in=Create_Text.objects.filter(scene_id=pk).values('id')).delete()
+            Text_Action.objects.filter(text_id__in=Create_Text.objects.filter(scene_id=pk).values('id')).delete()
+            Text_Transition.objects.filter(text_id__in=Create_Text.objects.filter(scene_id=pk).values('id')).delete()
+            Text_Text.objects.filter(text_id__in=Create_Text.objects.filter(scene_id=pk).values('id')).delete()
+            
+            ImageDesign.objects.filter(scene_id=pk).delete()
+            Image_Transform.objects.filter(image_id__in=ImageDesign.objects.filter(scene_id=pk).values('id')).delete()
+            Image_Appearance.objects.filter(image_id__in=ImageDesign.objects.filter(scene_id=pk).values('id')).delete()
+            Image_Action.objects.filter(image_id__in=ImageDesign.objects.filter(scene_id=pk).values('id')).delete()
+            Image_Transition.objects.filter(image_id__in=ImageDesign.objects.filter(scene_id=pk).values('id')).delete()
+
+            UploadVideo.objects.filter(scene_id=pk).delete()
+            Video_Transform.objects.filter(video_id__in=UploadVideo.objects.filter(scene_id=pk).values('id')).delete()
+            Video_Action.objects.filter(video_id__in=UploadVideo.objects.filter(scene_id=pk).values('id')).delete()
+            Video_Transition.objects.filter(video_id__in=UploadVideo.objects.filter(scene_id=pk).values('id')).delete()
+
+            ThreeDModelFile.objects.filter(scene_id=pk).delete()
+            ThreeDModel_Transform.objects.filter(ThreeDModel_id__in=ThreeDModelFile.objects.filter(scene_id=pk).values('id')).delete()
+            ThreeDModel_Action.objects.filter(ThreeDModel_id__in=ThreeDModelFile.objects.filter(scene_id=pk).values('id')).delete()
+            ThreeDModel_Transition.objects.filter(ThreeDModel_id__in=ThreeDModelFile.objects.filter(scene_id=pk).values('id')).delete()
+
+            scene.delete()
+
+            return Response({"message":"scene data deleted  successfully"}, status=status.HTTP_200_OK)
+        
+        except Scene.DoesNotExist:
+            raise Http404
+
+class GetSceneByProjectId(APIView):
+    def get(self, request, pk):
+        scenes = Scene.objects.filter(project_id=pk).order_by('id')
+        serializer = SceneSerializer(scenes, many=True)
+        
+        project_content = Project_Content.objects.filter(project_id=pk).order_by('id')
+        project_content_serializer = Project_ContentSerializer(project_content, many=True)
+        
+        background_sound = Background_Sound.objects.filter(project_content_id__in=project_content).order_by('id')
+        background_sound_serializer = Background_SoundSerializer(background_sound, many=True)
+        
+        analytics = Analytics.objects.filter(project_content_id__in=project_content).order_by('id')
+        analytics_serializer = AnalyticsSerializer(analytics, many=True)
+        
+        if scenes.exists() or project_content.exists() or background_sound.exists() or analytics.exists():
+            data = {
+                'scenes': serializer.data,
+                'project_content': [
+                    {
+                        'id': pc['id'],
+                        'opacity': pc['opacity'],
+                        'target_image': urljoin(url, pc['target_image']) if pc['target_image'] else None,
+                        'orientation': pc['orientation'],
+                        'dimensions_w': pc['dimensions_w'],
+                        'dimensions_h': pc['dimensions_h'],
+                        'units': pc['units'],
+                    } for pc in project_content_serializer.data
+                ],
+                'background_sound': [
+                    {
+                        'project_content_id': bs['project_content_id'],
+                        'media_file':urljoin(url, bs['media_file']) if bs['media_file'] else None,
+                        
+                    } for bs in background_sound_serializer.data
+                ],
+                'analytics': analytics_serializer.data
+            }
+        else:
+
+            data = {'data':'No data found'}
+
+        return Response(data)
+
+class UserDataAPIView(APIView):
+    def get(self, request, user_id):
+        try:
+            user = User.objects.get(id=user_id)
+
+            create_projects = user.createproject_set.all()
+
+            image_designs = ImageDesign.objects.filter(scene_id__project_id__in=create_projects)
+            upload_videos = UploadVideo.objects.filter(scene_id__project_id__in=create_projects)
+            three_d_model_files = ThreeDModelFile.objects.filter(scene_id__project_id__in=create_projects)
+
+            image_design_serializer = ImageDesignSerializer(image_designs, many=True)
+            upload_video_serializer = UploadVideoSerializer(upload_videos, many=True)
+            three_d_model_file_serializer = ThreeDModelFileSerializer(three_d_model_files, many=True)
+            
+            image_array=[]
+            for images_data in image_design_serializer.data:
+                image_id=images_data['id']
+                image=urljoin(url,(images_data['image']))
+                image_dict={"image_id":image_id,"image_url":image}
+                image_array.append(image_dict)
+            
+            video_array=[]
+            for video_data in upload_video_serializer.data:
+                video_id=video_data['id']
+                video=urljoin(url,(video_data['video']))
+                video_dict={"video_id":video_id,"video_url":video}
+                video_array.append(video_dict)
+            
+            threed_array=[]
+            for threed_data in three_d_model_file_serializer.data:
+                threed_file_id=threed_data['id']
+                threed_file=urljoin(url,(threed_data['File']))
+                threed_dict={"threed_id":threed_file_id,"threed_url":threed_file}
+                threed_array.append(threed_dict)
+            
+            response_data = {
+                'image_designs':image_array,
+                'upload_videos': video_array,
+                'three_d_model_files':threed_array
+            }
+
+            return Response({"data":response_data},status=status.HTTP_200_OK)
+
+        except User.DoesNotExist:
+            return Response({'message': 'No detail found with this User.'}, status=status.HTTP_404_NOT_FOUND)
+
+class Get_targetImageByProjectId(APIView):
+    def get(self, request,project_id):
+            if  Project_Content.objects.filter(project_id=project_id).exists():
+                target_image = Project_Content.objects.filter(project_id=project_id).values('target_image')
+                target_data=target_image[0]['target_image']
+                targeturl=urljoin(background_url,target_data)
+            
+                return Response({"data":targeturl},status=status.HTTP_200_OK)
+            else:
+     
+                return Response({'message': 'No detail found with this project.'}, status=status.HTTP_404_NOT_FOUND)
+
+
+

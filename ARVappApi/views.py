@@ -1,4 +1,5 @@
 
+from calendar import c
 from ARVisualApi.ar_package import *
 
 def get_tokens_for_user(user):
@@ -17,6 +18,30 @@ def verify_email(email, access_token):
     msg.attach_alternative(html_content, "text/html")
     msg.send()
 
+def create_user(self,request,serializer,email):
+    if serializer.is_valid(raise_exception=True):
+        user = serializer.save()
+        email = email
+        if user is not None:
+            token = get_tokens_for_user(user)
+            access_token = token['access']
+            verify_email(email, access_token)
+            return access_token
+        
+def update_user(email,firstname,lastname,image,dateofbirth,proffession,password):
+    user = User.objects.filter(email=email).first()
+    user.firstname = firstname
+    user.lastname = lastname
+    user.image = image
+    user.dateofbirth = dateofbirth
+    user.proffession = proffession
+    user.set_password(password)
+    user.save()
+    token = get_tokens_for_user(user)
+    access_token = token['access']
+    verify_email(email, access_token)
+    return access_token
+
 def forget_password_mail(email, access_token):
     subject, from_email, to = 'Forget Password Link', settings.EMAIL_HOST_USER, email
     text_content = 'This is an important message.'
@@ -25,6 +50,28 @@ def forget_password_mail(email, access_token):
     msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
     msg.attach_alternative(html_content, "text/html")
     msg.send()
+
+def update_zpt_url(self,request,project_id,url):
+        
+    project = ZPT_Trained_Model.objects.filter(project_id=project_id).first()
+    project.url = url
+    project.save()
+    data = {
+        "id": project.id,
+        "project_id": project_id,
+        "url": url
+    }
+    return data
+
+def createzpt(serializer,project_id):
+    if serializer.is_valid(raise_exception=True):
+        serializer.save()
+        data = {
+            "id": serializer.data['id'],
+            "project_id": project_id,
+            "url": serializer.data['url']
+        }
+        return data
 
 class UserRegistrationView(views.APIView):
     permission_classes = (AllowAny,)
@@ -38,43 +85,24 @@ class UserRegistrationView(views.APIView):
         dateofbirth = request.data.get('dateofbirth') 
         proffession = request.data.get('proffession') 
         serializer = UserRegister(data=request.data)
-
+        #update user If user is not verified
         if User.objects.filter(email=email, Is_verified=False).exists():
             user = User.objects.filter(email=email).first()
-            user.firstname = firstname
-            user.lastname = lastname
-            user.image = image
-            user.dateofbirth = dateofbirth
-            user.proffession = proffession
-            user.set_password(password)
-            user.save()
-
-            token = get_tokens_for_user(user)
-            access_token = token['access']
-            verify_email(email, access_token)
-
+            access_token= update_user(email,firstname,lastname,image,dateofbirth,proffession,password)
             return Response({
                 'status': status.HTTP_201_CREATED,
                 'msg': 'Email Verification link sent to your email',
                 'token': access_token
             })
-
         else:    
-            if serializer.is_valid(raise_exception=True):
-                user = serializer.save()
-                email = email
-                if user is not None:
-                    token = get_tokens_for_user(user)
-                    access_token = token['access']
-                    verify_email(email, access_token)
-                return Response({
-                    'status': status.HTTP_201_CREATED,
-                    'msg': 'Email Verification link sent to your email',
-                    'token': access_token
-                })
-
-        return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-       
+            # create user
+            access_token= create_user(self,request,serializer,email)
+            return Response({
+                'status': status.HTTP_201_CREATED,
+                'msg': 'Email Verification link sent to your email',
+                'token': access_token
+            })
+      
 class ResendVerifyEmail(views.APIView):
     renderer_classes=[UserRenderer]
     permission_classes=[IsAuthenticated]
@@ -746,71 +774,20 @@ class GetUploadFilebyUser_id(APIView):
             exc_type, exc_obj, exc_tb = sys.exc_info()
             return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)},status=status.HTTP_400_BAD_REQUEST)
 
-class ZPT_Trained_File_View(APIView):
-    def post(self, request):
-        project_id=request.data.get('project_id')
-        file=request.data.get('file')
-       
-        if CreateProject.objects.filter(project_id=project_id).exists():
-            project = User.objects.filter(project_id=project_id).first()
-            project.file = file
-            project.save()
-
-
-        # if not project_id:
-        #         return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "project detail is required"},status=status.HTTP_400_BAD_REQUEST)
-        # try:
-        #     user = CreateProject.objects.get(id=project_id)
-        # except CreateProject.DoesNotExist:
-        #     return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "project does not exist"},status=status.HTTP_400_BAD_REQUEST)
-        
-        # if not file:
-        #     return JsonResponse({"status": status.HTTP_400_BAD_REQUEST, "message": "file field is required"},status=status.HTTP_400_BAD_REQUEST)
-        
-        serializer = ZPT_Trained_Model_Serializer(data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-            print("data---",serializer.data)
-        #     data={
-        #         "id":serializer.data['id'],
-        #         "project_id":project_id,
-        #         "zpt_file":urljoin(url,serializer.data['file'])
-        #     }
-        #     return Response({"status":status.HTTP_200_OK,'message':'file uploaded successfully','data':data})
-        return Response({"status":status.HTTP_200_OK,'message':'file uploaded successfully'})
-
-
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from django.http import JsonResponse
-from urllib.parse import urljoin
-import sys
 
 class ZPT_Trained_File_View(APIView):
     def post(self, request):
         try:
             project_id = request.data.get('project_id')
             url = request.data.get('url')
-
             if not project_id:
                 return Response({"status": status.HTTP_400_BAD_REQUEST, "message": "project detail is required"}, status=status.HTTP_400_BAD_REQUEST)
             
             if not url:
                 return JsonResponse({"status": status.HTTP_400_BAD_REQUEST, "message": "url field is required"}, status=status.HTTP_400_BAD_REQUEST)
-            
             if ZPT_Trained_Model.objects.filter(project_id=project_id).exists():
-                project = ZPT_Trained_Model.objects.filter(project_id=project_id).first()
-                project.url = url
-                project.save()
-                data = {
-                    "id": project.id,
-                    "project_id": project_id,
-                    "url": url
-                }
 
+                data=update_zpt_url(self,request,project_id,url)
                 return Response({
                     'status': status.HTTP_200_OK,
                     'message': 'data updated successfully',
@@ -818,22 +795,13 @@ class ZPT_Trained_File_View(APIView):
                 })
             else:
                 serializer = ZPT_Trained_Model_Serializer(data=request.data)
-                
-                if serializer.is_valid():
-                    serializer.save()
-                    
-                    data = {
-                        "id": serializer.data['id'],
-                        "project_id": project_id,
-                        "url": serializer.data['url']
-                    }
-                    return Response({"status": status.HTTP_200_OK, 'message': 'data uploaded successfully', 'data': data})
-                else:
-                    return Response({"status": status.HTTP_400_BAD_REQUEST, "message": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+                data=createzpt(serializer,project_id)
+                return Response({"status": status.HTTP_200_OK, 'message': 'data uploaded successfully', 'data': data})
+              
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             return Response({"status": status.HTTP_400_BAD_REQUEST, "message": str(e) + " in line " + str(exc_tb.tb_lineno)}, status=status.HTTP_400_BAD_REQUEST)
-
+    
             
 class Get_ZPTFile_ByProjectId(APIView):
     def get(self, request,project_id):
