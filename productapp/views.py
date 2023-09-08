@@ -1584,7 +1584,7 @@ class SceneAllDetailById(APIView):
                     "video_action": video_action_dict,
                     }]
                 video_array.append(video_dict_array)
-                return video_array
+        return video_array
 
     def get_threed_data(self, pk):
         threed=ThreeDModelFile.objects.all().order_by('id')
@@ -1610,7 +1610,7 @@ class SceneAllDetailById(APIView):
                     "threedModel_action": threedModel_action_dict,
                     }]
                 threed_array.append(threed_dict_array)
-                return threed_array
+        return threed_array
  
     
 
