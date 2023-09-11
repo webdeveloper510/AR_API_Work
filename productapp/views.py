@@ -1436,17 +1436,18 @@ class SceneAllDetailById(APIView):
     def get(self, request, pk):
         if not Scene.objects.filter(id=pk).exists():
             return Response({"status":status.HTTP_400_BAD_REQUEST,"message": "Data Not Found"}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            scene_array = self.get_scene_data(pk)
+            button_array = self.get_button_data(pk)
+            text_array = self.get_text_data(pk)
+            image_array = self.get_image_data(pk)
+            video_array = self.get_video_data(pk)
+            threed_array = self.get_threed_data(pk)
+            Twod_3D=self.Twod_3D(pk)
 
-        scene_array = self.get_scene_data(pk)
-        button_array = self.get_button_data(pk)
-        text_array = self.get_text_data(pk)
-        image_array = self.get_image_data(pk)
-        video_array = self.get_video_data(pk)
-        threed_array = self.get_threed_data(pk)
-
-        array = [{"id": pk, "scene_data": scene_array, "button_data": button_array, "text_data": text_array,
-                  "image_data": image_array, "video_data": video_array, "ThreeDmodeldata": threed_array}]
-        return Response({"status":status.HTTP_200_OK,"message": "Success", "data": array}, status=status.HTTP_200_OK)
+            array = [{"id": pk, "scene_data": scene_array, "button_data": button_array, "text_data": text_array,
+                    "image_data": image_array, "video_data": video_array, "ThreeDmodeldata": threed_array,"Twod_3D":Twod_3D}]
+            return Response({"status":status.HTTP_200_OK,"message": "Success", "data": array}, status=status.HTTP_200_OK)
 
     def get_scene_data(self, pk):
         scene_array = []
@@ -1612,7 +1613,17 @@ class SceneAllDetailById(APIView):
                 threed_array.append(threed_dict_array)
         return threed_array
  
-    
+    def Twod_3D(self, pk):
+        threed=TwoD_ThreeD_Switch.objects.all().order_by('id')
+        serializer_class4=TwoD_ThreeD_SwitchSerializer(threed,many=True)
+     
+        for twod_threed_data in serializer_class4.data:
+            scene_id=twod_threed_data['scene_id']
+            if scene_id==pk:
+                threed_id=twod_threed_data['id']
+                value=twod_threed_data['value']
+                twod_3d_dict={"scene_id":pk,"value":value,"threed_id":threed_id}
+                return  twod_3d_dict
 
     def delete(self, request, pk):
         try:
