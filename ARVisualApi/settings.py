@@ -40,8 +40,8 @@ CORS_ALLOWED_ORIGINS = [
     
     'http://localhost:3000',
     'http://127.0.0.1:3000',
-    'http://3.109.213.210:8000',
-    'http://3.109.213.210'
+    'http://194.33.105.77:8000',
+    'http://194.33.105.77'
 ]
 
 # Application definition
@@ -124,12 +124,12 @@ DATABASES = {
     'ENGINE': 'django.db.backends.mysql', 
     'NAME': 'ArVisual',
     'USER': 'root',
-    'PASSWORD': '',#Admin@123
+    'PASSWORD': '1234',#Admin@123
     'HOST': 'localhost', # Or an IP Address that your DB is hosted on
     'PORT': '3306',
-    'OPTIONS': {
-            'read_default_file': '/opt/lampp/etc/my.cnf',
-        }
+    # 'OPTIONS': {
+    #         'read_default_file': '/opt/lampp/etc/my.cnf',
+    #     }
     }
 }
 
@@ -175,8 +175,8 @@ STATICFILES_DIRS = [
 STATIC_URL = '/static/'
 MEDIA_ROOT = BASE_DIR /"static/media"
 MEDIA_URL = "/media/"
-BASE_URL = "http://3.109.213.210:8000"
-# BASE_URL = "http://127.0.0.1:8000"
+# BASE_URL = "http://194.33.105.77:8000"
+BASE_URL = "http://127.0.0.1:8000"
 
 
 # Default primary key field type
@@ -186,7 +186,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1), 
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
@@ -213,6 +213,5 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 PASSWORD_RESET_TIMEOUT= 900 #sec=15 minutes, 
-
 
 

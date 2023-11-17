@@ -18,7 +18,7 @@ from django.conf import settings
 from django.http import Http404
 from ARVappApi.renderer import UserRenderer
 # url="http://127.0.0.1:8000"
-url="http://3.109.213.210:8000"
+url="http://194.33.105.77:8000"
 from urllib.parse import urljoin
 from django.core.exceptions import ValidationError
 import os
@@ -33,7 +33,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.http import JsonResponse
 import numpy as np
 # image_url="http://127.0.0.1:8000/media/"
-image_url="http://3.109.213.210:8000/media/"
+image_url="http://194.33.105.77:8000/media/"
 
 # Project_Id_Url="http://127.0.0.1:3000/#/ar-web-view"
 Project_Id_Url="http://sayehbaz.ir/#/ar-web-view"
@@ -61,12 +61,12 @@ from rest_framework.decorators import action
 from rest_framework import status, views
 from rest_framework import generics
 from django.shortcuts import get_object_or_404
-url="http://127.0.0.1:8000"
-url="http://3.109.213.210:8000"
+# url="http://127.0.0.1:8000"
+url="http://194.33.105.77:8000"
 from urllib.parse import urljoin
 from django.http import Http404
 # background_url="http://127.0.0.1:8000/media/"
-background_url="http://3.109.213.210:8000/media/"
+background_url="http://194.33.105.77:8000/media/"
 # Create button Api 
 from productapp.utilities import URLEncrypter
 import qrcode 

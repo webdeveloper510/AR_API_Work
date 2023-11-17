@@ -196,6 +196,7 @@ class ForgetPasswordView(APIView):
             else:
                 token = get_tokens_for_user(user) 
                 access_token = token['access']
+                print(access_token)
                 forget_password_mail(email, access_token)
                 return Response({'status': status.HTTP_200_OK, 'msg': 'Forget password Link sent to your email ','token':access_token})
             
