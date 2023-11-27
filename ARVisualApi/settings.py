@@ -40,8 +40,8 @@ CORS_ALLOWED_ORIGINS = [
     
     'http://localhost:3000',
     'http://127.0.0.1:3000',
-    'http://194.33.105.77:8000',
-    'http://194.33.105.77'
+    'http://13.232.225.65:8000',
+    'http://13.232.225.65'
 ]
 
 # Application definition
@@ -175,8 +175,8 @@ STATICFILES_DIRS = [
 STATIC_URL = '/static/'
 MEDIA_ROOT = BASE_DIR /"static/media"
 MEDIA_URL = "/media/"
-# BASE_URL = "http://194.33.105.77:8000"
-BASE_URL = "http://127.0.0.1:8000"
+BASE_URL = "http://13.232.225.65:8000"
+# BASE_URL = "http://127.0.0.1:8000"
 
 
 # Default primary key field type
